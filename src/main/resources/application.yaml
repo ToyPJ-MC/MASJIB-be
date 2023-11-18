@@ -1,0 +1,21 @@
+spring:
+  config:
+    import:
+      - application-jasypt.yaml
+      - application-mysql.yaml
+      - application-apidocs.yaml
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+logging:
+  config: classpath:log/log4j2.xml
+
+  http:
+    multipart:
+      enabled: true

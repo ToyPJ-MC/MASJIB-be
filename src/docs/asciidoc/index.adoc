@@ -1,0 +1,45 @@
+= MASJIB 기술명세서
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectnums:
+:sectlinks:
+:sectanchors:
+
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+
+== Member API
+
+=== 멤버 등록 API
+==== Request
+include::{snippets}/member/create/http-request.adoc[]
+
+include::{snippets}/member/create/request-fields.adoc[]
+
+==== Response
+include::{snippets}/member/create/http-response.adoc[]
+
+=== 조회 By Id API
+==== Request
+include::{snippets}/member/find/http-request.adoc[]
+
+==== ResponseMemberDTO
+include::{snippets}/member/find/response-body.adoc[]
+
+== Review API
+
+=== 리뷰 등록 API
+==== Request
+include::{snippets}/review/create/http-request.adoc[]
+content-type : mutipart/form-data 설정
+
+include::{snippets}/review/create/request-fields.adoc[]
+리뷰 등록 시 사진은 필수값이 아님
+
+==== Response
+include::{snippets}/review/create/http-response.adoc[]
