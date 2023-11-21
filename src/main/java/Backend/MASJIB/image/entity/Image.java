@@ -23,5 +23,6 @@ public class Image {
     @ManyToOne
     @JoinColumn(name = "review_id",nullable = false)
     private Review review;
+    private long shopId;
 
 }

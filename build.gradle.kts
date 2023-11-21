@@ -47,8 +47,9 @@ dependencies {
 	testAnnotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0")
+	testImplementation("org.mockito:mockito-core:5.7.0")
 	//testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
-	//testImplementation("io.kotest:kotest-runner-junit5:4.6.2")
+	testImplementation("io.kotest:kotest-runner-junit5:4.6.2")
 	asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
 
 	testImplementation("org.springframework.batch:spring-batch-test:5.0.3")

@@ -2,6 +2,8 @@ package Backend.MASJIB.shop.dto;
 
 import Backend.MASJIB.member.dto.ResponseMemberByCreateDto;
 import Backend.MASJIB.member.entity.Member;
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.shop.entity.Shop;
 import jakarta.persistence.ElementCollection;
 import lombok.AllArgsConstructor;
@@ -28,8 +30,8 @@ public class ResponseShopByCreateDto {
     private long followCount;
 
     private String kind;
-    @ElementCollection
-    private Map<Double,Long> rating = new HashMap<>();
+    private Rating rating;
+    private Assessment assessment;
 
     public static ResponseShopByCreateDto set(Shop shop){
         ResponseShopByCreateDto createDto = new ResponseShopByCreateDto();
@@ -42,6 +44,7 @@ public class ResponseShopByCreateDto {
         createDto.setX(shop.getX());
         createDto.setY(shop.getY());
         createDto.setKind(shop.getKind());
+        createDto.setAddress(shop.getAddress());
         return createDto;
     }
 }

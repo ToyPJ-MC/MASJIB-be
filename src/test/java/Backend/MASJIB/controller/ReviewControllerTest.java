@@ -64,7 +64,7 @@ public class ReviewControllerTest {
     @DisplayName("Review Create by Review Controller Using CreateReviewDto API")
     void 리뷰_컨트롤러_생성_테스트()throws Exception{
 
-        String content = objectMapper.writeValueAsString(new CreateReviewDto("string",1,1,3.5,new ArrayList<>()));
+        String content = objectMapper.writeValueAsString(new CreateReviewDto("음식이 맛있습니다.",1,1,3.5,"goodTaste","goodHygiene","kindness",new ArrayList<>()));
         MockMultipartFile notice = new MockMultipartFile("reviewDto", "reviewDto", "multipart/form-data", content.getBytes(StandardCharsets.UTF_8));
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/api/post")
@@ -84,6 +84,9 @@ public class ReviewControllerTest {
                                         fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("멤버 아이디를 입력합니다.").attributes(key("Constraints").value("false")),
                                         fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("가게 아이디를 입력합니다.").attributes(key("Constraints").value("false")),
                                         fieldWithPath("rating").type(JsonFieldType.NUMBER).description("평점을 입력합니다.").attributes(key("Constraints").value("false")),
+                                        fieldWithPath("taste").type(JsonFieldType.STRING).description("맛을 입력합니다.").attributes(key("Constraints").value("false")),
+                                        fieldWithPath("hygiene").type(JsonFieldType.STRING).description("친절함을 입력합니다.").attributes(key("Constraints").value("false")),
+                                        fieldWithPath("kindness").type(JsonFieldType.STRING).description("위생도를 입력합니다.").attributes(key("Constraints").value("false")),
                                         fieldWithPath("files").type(JsonFieldType.ARRAY).description("사진을 첨부합니다.").attributes(key("Constraints").value("false")).optional()
                                 )
                         )

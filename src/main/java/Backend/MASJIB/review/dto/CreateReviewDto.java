@@ -28,5 +28,9 @@ public class CreateReviewDto {
     @NotNull
     private double rating;
 
+    //Assessment
+    private String taste;
+    private String hygiene;
+    private String kindness;
     private List<MultipartFile> files = new ArrayList<>();
 }

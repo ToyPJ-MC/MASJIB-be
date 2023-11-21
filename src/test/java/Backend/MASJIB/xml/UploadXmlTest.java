@@ -1,5 +1,7 @@
 package Backend.MASJIB.xml;
 
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
 import org.junit.jupiter.api.Test;
@@ -77,7 +79,8 @@ public class UploadXmlTest {
                         .x(Double.valueOf(x))
                         .y(Double.valueOf(y))
                         .reviewCount(0)
-                        .rating(new HashMap<>())
+                        .rating(Rating.set())
+                        .assessment(Assessment.set())
                         .status(status)
                         .build();
                 shopRepository.save(shop);

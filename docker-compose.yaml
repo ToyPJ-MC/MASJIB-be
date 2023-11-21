@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  backend:
+    image: backend:latest
+    ports:
+      - "18080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:log4jdbc:mysql://local_mysql:3306/masjib?useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "1257"
+      JASYPT_ENCRYPTOR_PASSWORD: moon
+    restart: always
+    networks:
+      - masjib-network
+
+networks:
+  masjib-network:  # 기존에 생성된 네트워크와 동일한 이름 사용
+    external: true  # 외부 네트워크로 선언

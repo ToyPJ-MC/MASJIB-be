@@ -32,9 +32,9 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.MULTIPART_FORM_DATA_VALUE) // 사진의 경우
+    @PostMapping(value = "/review/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.MULTIPART_FORM_DATA_VALUE) // 사진의 경우
     @Operation(summary = "리뷰 등록")
-    public ResponseEntity createReview(@ModelAttribute CreateReviewDto dto){
+    public ResponseEntity createReview(@PathVariable long id,@ModelAttribute CreateReviewDto dto){
         try {
             ResponseReviewByCreateDto returnDto =reviewService.createReview(dto);
             return ResponseEntity.ok().body(returnDto);

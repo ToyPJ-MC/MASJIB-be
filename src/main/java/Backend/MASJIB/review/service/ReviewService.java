@@ -5,6 +5,8 @@ import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.entity.Member;
 import Backend.MASJIB.member.repository.MemberRepository;
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.dto.CreateReviewDto;
 import Backend.MASJIB.review.dto.ResponseReviewByCreateDto;
 import Backend.MASJIB.review.entity.Review;
@@ -53,6 +55,8 @@ public class ReviewService {
 
         Optional<Shop> findShop = shopRepository.findById(dto.getShopId());
         findShop.orElseThrow(RuntimeException::new);
+        setRatingToShop(findShop.get(),dto.getRating());
+        setAssessment(findShop.get(),dto.getTaste(),dto.getHygiene(),dto.getKindness());
 
         Review review = Review.builder()
                 .comment(dto.getComment())
@@ -61,6 +65,9 @@ public class ReviewService {
                 .member(findMember.get())
                 .rating(dto.getRating())
                 .shop(findShop.get())
+                .hygiene(dto.getHygiene())
+                .kindness(dto.getKindness())
+                .taste(dto.getTaste())
                 .build();
 
         if(!dto.getFiles().isEmpty()){
@@ -75,7 +82,7 @@ public class ReviewService {
             }
             findShop.get().setReviewCount(findShop.get().getReviewCount()+1);
         }
-        findShop.get().getRating().put(dto.getRating(),findShop.get().getRating().get(dto.getRating())+1);
+
         reviewRepository.save(review);
         shopRepository.save(findShop.get());
 
@@ -100,5 +107,27 @@ public class ReviewService {
         return paths;
     }
 
-
+    private void setRatingToShop(Shop shop, Double rating){
+        if(rating==5.0) shop.getRating().setFive(shop.getRating().getFive()+1);
+        else if(rating==4.5) shop.getRating().setFourHalf(shop.getRating().getFourHalf()+1);
+        else if(rating==4.0) shop.getRating().setFour(shop.getRating().getFour()+1);
+        else if(rating==3.5) shop.getRating().setThreeHalf(shop.getRating().getThreeHalf()+1);
+        else if(rating==3.0) shop.getRating().setThree(shop.getRating().getThree()+1);
+        else if(rating==2.5) shop.getRating().setTwoHalf(shop.getRating().getTwoHalf()+1);
+        else if(rating==2.0) shop.getRating().setTwo(shop.getRating().getTwo()+1);
+        else if(rating==1.5) shop.getRating().setOneHalf(shop.getRating().getOneHalf()+1);
+        else if(rating==1.0) shop.getRating().setOne(shop.getRating().getOne()+1);
+        else if(rating==0.5) shop.getRating().setHalf(shop.getRating().getHalf()+1);
+        else shop.getRating().setZero(shop.getRating().getZero()+1);
+        shop.getRating().setCount(shop.getRating().getCount()+1);
+        shop.setReviewCount(shop.getReviewCount()+1);
+    }
+    private void setAssessment(Shop shop,String taste,String hygiene,String kindness){
+        if(taste.equals("goodTaste")) shop.getAssessment().setGoodTaste(shop.getAssessment().getGoodTaste()+1);
+        else if(taste.equals("badTaste")) shop.getAssessment().setBadTaste(shop.getAssessment().getBadTaste()+1);
+        if(hygiene.equals("goodHygiene")) shop.getAssessment().setGoodHygiene(shop.getAssessment().getGoodHygiene()+1);
+        else if(hygiene.equals("badHygiene")) shop.getAssessment().setBadHygiene(shop.getAssessment().getBadHygiene()+1);
+        if(kindness.equals("unkindness")) shop.getAssessment().setUnkindness(shop.getAssessment().getUnkindness()+1);
+        else if(kindness.equals("kindness")) shop.getAssessment().setKindness(shop.getAssessment().getKindness()+1);
+    }
 }

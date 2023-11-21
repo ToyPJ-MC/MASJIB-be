@@ -15,12 +15,18 @@ import java.util.List;
 
 @Getter
 @Setter
+
 public class ResponseReviewByCreateDto {
     private long id;
     private String comment;
     private long member_id;
     private long shop_id;
+
     private double rating;
+
+    private String taste;
+    private String hygiene;
+    private String kindness;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime createTime;
@@ -37,6 +43,10 @@ public class ResponseReviewByCreateDto {
             createDto.setImages(new ArrayList<>());
         else createDto.setImages(review.getImages());
         createDto.setCreateTime(review.getCreateTime());
+        createDto.setTaste(review.getTaste());
+        createDto.setHygiene(review.getHygiene());
+        createDto.setKindness(review.getKindness());
+
         return createDto;
     }
 }

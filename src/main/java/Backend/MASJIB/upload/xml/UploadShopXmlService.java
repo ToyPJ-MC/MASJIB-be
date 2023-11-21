@@ -1,5 +1,7 @@
 package Backend.MASJIB.upload.xml;
 
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class UploadShopXmlService {
     private final ShopRepository shopRepository;
@@ -84,11 +88,13 @@ public class UploadShopXmlService {
                         .x(Double.valueOf(x))
                         .y(Double.valueOf(y))
                         .reviewCount(0)
-                        .rating(new HashMap<>())
+                        .rating(Rating.set())
                         .status(status)
+                        .assessment(Assessment.set())
                         .build();
                 shopRepository.save(shop);
             }
         }
+
     }
 }
