@@ -1,26 +1,36 @@
 package Backend.MASJIB.shop.service;
 
+import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
+import Backend.MASJIB.review.entity.Review;
+import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.dto.CreateShopDto;
+import Backend.MASJIB.shop.dto.FindByShopByRadiusToSortDto;
 import Backend.MASJIB.shop.dto.ResponseShopByCreateDto;
+import Backend.MASJIB.shop.dto.ResponseShopByRadiusDto;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+import com.mysql.cj.xdevapi.JsonArray;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @Slf4j
 public class ShopService {
     private final ShopRepository shopRepository;
-
-    public ShopService(ShopRepository shopRepository) {
+    private final ReviewRepository reviewRepository;
+    @Autowired
+    public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository) {
         this.shopRepository = shopRepository;
+        this.reviewRepository = reviewRepository;
     }
     public ResponseShopByCreateDto createShop(CreateShopDto dto){
         if(shopRepository.existsByAddress(dto.getAddress())){
@@ -42,10 +52,46 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
+    public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
+        List<Shop> findShop;
+        if(sort.equals("rating")){
+             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY());
+        }
+        else{
+            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
+        }
+        List<JSONObject> responseShopDtoList = setResponseShopDto(findShop,dto.getPage());
+
+        JSONArray jsonArray = new JSONArray(responseShopDtoList);
+        JSONObject jsonObject = setMaxPage(findShop.size());
+        jsonArray.put(jsonObject);
+        return jsonArray;
+    }
     private Rating setRating(){
         return Rating.set();
     }
     private Assessment setAssessment(){
         return Assessment.set();
+    }
+
+    private JSONObject setMaxPage(int size){
+        JSONObject object = new JSONObject();
+        if(size/10<10)object.put("maxPage",1);
+        else if(size%10!=0) object.put("maxPage",size/10+1);
+        else object.put("maxPage",size/10);
+        return object;
+    }
+    private List<JSONObject> setResponseShopDto(List<Shop> shops, int size){
+        List<JSONObject> responseShopDtoList = new ArrayList<>();
+        for(int i=0;i<shops.size();i++){
+            if(i<size*10 && i>=(size-1)*10){
+                Review findReivewWithNotNUllImage = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
+                ResponseShopByRadiusDto responseShopByRadiusDto = ResponseShopByRadiusDto.set(shops.get(i),findReivewWithNotNUllImage);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(String.valueOf(i),responseShopByRadiusDto);
+                responseShopDtoList.add(jsonObject);
+            }
+        }
+        return responseShopDtoList;
     }
 }

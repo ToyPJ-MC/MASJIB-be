@@ -40,6 +40,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-batch:3.1.5")
 	implementation("commons-io:commons-io:2.15.0")
 
+
+	implementation("org.locationtech.proj4j:proj4j:1.2.2")
+	implementation("com.vividsolutions:jts-core:1.14.0")
+	implementation("org.geotools:gt-referencing:29.1")
+
+	implementation("org.json:json:20231013")
+
 	implementation("com.mysql:mysql-connector-j:8.1.0")
 	compileOnly("org.projectlombok:lombok:1.18.28")
 

@@ -8,10 +8,14 @@ import Backend.MASJIB.rating.repository.AssessmentRepository;
 import Backend.MASJIB.rating.repository.RatingRepository;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.locationtech.proj4j.*;
+import org.locationtech.proj4j.proj.Projection;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+
+import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,6 +131,13 @@ public class ShopRepositoryTest {
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
         List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",12.114001,89.11414);// 내림차순
+        int page = 1;
+        int size =10;
+        for(int i=0;i<findShopByRating.size();i++){
+            if(i<page*size){
+                System.out.println(i+" : "+findShopByRating.get(i).getName());
+            }
+        }
 
 
     }
@@ -141,4 +155,48 @@ public class ShopRepositoryTest {
         List<Image> findImages = imageRepository.findByShopId(findShop.get().getId());
 
     }
+    @Test
+    @DisplayName("Change Address to X,Y Using GeoCode Test")
+    void 주소_좌표_변환_테스트() throws Exception{
+
+       // CRS 객체 생성
+        CRSFactory crsFactory = new CRSFactory();
+
+        // WGS84 system 정의
+        String wgs84Name = "WGS84";
+        String wgs84Proj = "+proj=longlat +datum=WGS84 +no_defs";
+        CoordinateReferenceSystem wgs84System = crsFactory.createFromParameters(wgs84Name, wgs84Proj);
+
+        // UTMK system 정의
+        String epsg2097Name = "ESPG:5174";
+        String epsg2097Proj = "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43";
+        CoordinateReferenceSystem utmkSystem = crsFactory.createFromParameters(epsg2097Name, epsg2097Proj);
+
+        // 변환할 좌표계 정보 생성
+        ProjCoordinate p = new ProjCoordinate();
+        p.x = 242924.59192413;
+        p.y = 351685.948976672;
+
+        // 변환된 좌표를 담을 객체 생성
+        ProjCoordinate p2 = new ProjCoordinate();
+
+        //CoordinateTransformFactory ctFactory = new CoordinateTransformFactory();
+        // 변환 시스템 지정. (원본 시스템, 변환 시스템)
+        BasicCoordinateTransform coordinateTransform = new BasicCoordinateTransform(utmkSystem,wgs84System);
+        // 좌표 변환
+        //ProjCoordinate projCoordinate = coordinateTransform.transform(p, p2);
+        coordinateTransform.transform(p, p2);
+        // 변환된 좌표
+        double x = p2.x;
+        double y = p2.y;
+
+        System.out.println(x+" , "+y);
+        System.out.println(Math.abs(127.04653258456933-x));
+        System.out.println(Math.abs(37.502974431241725-y));
+        /*assertThat(x).isEqualTo(127.03161500261596);
+        assertThat(y).isEqualTo(37.49665525639916);*/
+    }
+
+    //0.0007920188797 , 0.00837743122996
+
 }

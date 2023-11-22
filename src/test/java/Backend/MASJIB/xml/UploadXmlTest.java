@@ -49,6 +49,7 @@ public class UploadXmlTest {
         String status ="";
         String element="";
         String category="";
+
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             // 시작 태그를 만났을 때 실행되는 코드

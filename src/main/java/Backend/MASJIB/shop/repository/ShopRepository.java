@@ -1,6 +1,8 @@
 package Backend.MASJIB.shop.repository;
 
 import Backend.MASJIB.shop.entity.Shop;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +34,10 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
             "6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) + " +
             "sin(radians(:myY)) * sin(radians(s.y))) < 1 AND s.address LIKE %:address% group by s.id order by assess desc, s.name") //GoodTaste 순 정렬
     List<Shop> sortByShopWithinRadiusAndTasteAssess(@Param("address") String address, @Param("myX") double myX, @Param("myY") double myY);
+
+    @Query("SELECT s FROM Shop s WHERE " +
+            "6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) + " +
+            "sin(radians(:myY)) * sin(radians(s.y))) < 1 AND s.address LIKE %:address% group by s.id order by :sort desc, s.name")
+    List<Shop> FindByShopWithinRadiusAndSort(@Param("address") String address, @Param("myX") double myX, @Param("myY") double myY,@Param("sort") String sort);
+
 }
