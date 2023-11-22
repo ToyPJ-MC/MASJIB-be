@@ -4,6 +4,7 @@ import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.shop.entity.Shop;
 import lombok.Getter;
 import lombok.Setter;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -19,22 +20,35 @@ public class ResponseShopByRadiusDto {
     private String recentReview;
     private long reviewCount;
 
-    public static ResponseShopByRadiusDto set(Shop shop, Review review){
-        ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
-        dto.setName(shop.getName());
-        dto.setAddress(shop.getAddress());
-        dto.setX(shop.getX());
-        dto.setY(shop.getY());
-        dto.setKind(shop.getKind());
+    public static JSONObject set(Shop shop, Review review){
+        JSONObject obj = new JSONObject();
+        obj.put("name",shop.getName());
+        obj.put("address",shop.getAddress());
+        obj.put("x",shop.getX());
+        obj.put("y",shop.getY());
+        obj.put("kind",shop.getKind());
         if(review ==null){
-            dto.setImage("존재하지 않습니다.");
-            dto.setRecentReview("최근 리뷰가 없습니다.");
+            obj.put("image","존재하지 않습니다.");
+            obj.put("recentReview","최근 리뷰가 없습니다.");
         }
         else{
-            dto.setImage(review.getImages().get(0).getPath());
-            dto.setRecentReview(review.getComment());
+            obj.put("image",review.getImages().get(0).getPath());
+            obj.put("recentReview",review.getComment());
         }
-        dto.setReviewCount(shop.getReviewCount());
-        return dto;
+        obj.put("reviewCount",shop.getReviewCount());
+
+        return obj;
+    }
+    public static String toString(ResponseShopByRadiusDto dto, int index){
+        return index + " {"+
+                "name='" + dto.getName() + '\'' +
+                ", address='" + dto.getAddress() + '\'' +
+                ", x=" + dto.getX() +
+                ", y=" + dto.getY() +
+                ", kind='" + dto.getKind() + '\'' +
+                ", image='" + dto.getImage() + '\'' +
+                ", recentReview='" + dto.getRecentReview() + '\'' +
+                ", reviewCount=" + dto.getReviewCount() +
+                '}';
     }
 }

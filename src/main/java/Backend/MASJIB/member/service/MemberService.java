@@ -22,13 +22,12 @@ public class MemberService {
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseMemberbyFindDto findMemberById(Long id){
         if(!memberRepository.existsById(id)){
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
-        Optional<Member> findMember = memberRepository.findById(id);
-        System.out.println(findMember.get().getReviews().get(0));
+        Optional<Member> findMember = memberRepository.findById(id);    
         return ResponseMemberbyFindDto.set(findMember.get());
     }
     @Transactional

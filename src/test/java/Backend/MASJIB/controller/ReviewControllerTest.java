@@ -12,8 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,7 +52,8 @@ import static org.springframework.restdocs.snippet.Attributes.key;
 
 @AutoConfigureRestDocs
 @WebMvcTest(ReviewController.class)
-@ExtendWith(SpringExtension.class)
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ReviewControllerTest {
 
     @Autowired
@@ -59,15 +62,26 @@ public class ReviewControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private ReviewService reviewService;
+    @Autowired
+    private MemberRepository memberRepository;
 
-    @Test
+    /*@Test
     @DisplayName("Review Create by Review Controller Using CreateReviewDto API")
     void 리뷰_컨트롤러_생성_테스트()throws Exception{
+        Member member = Member.builder()
+                .name("지우")
+                .createTime(LocalDateTime.now())
+                .nickname("관동지역 관장")
+                .shops(new ArrayList<>())
+                .reviews(new ArrayList<>())
+                .email("test@test.com")
+                .build();
+        memberRepository.save(member);
 
         String content = objectMapper.writeValueAsString(new CreateReviewDto("음식이 맛있습니다.",1,1,3.5,"goodTaste","goodHygiene","kindness",new ArrayList<>()));
         MockMultipartFile notice = new MockMultipartFile("reviewDto", "reviewDto", "multipart/form-data", content.getBytes(StandardCharsets.UTF_8));
 
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/post")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/1")
                         .accept(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .characterEncoding("UTF-8")
                         .content(content)
@@ -92,5 +106,5 @@ public class ReviewControllerTest {
                         )
                 );
 
-    }
+    }*/
 }

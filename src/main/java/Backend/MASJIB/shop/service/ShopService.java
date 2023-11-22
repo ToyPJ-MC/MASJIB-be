@@ -52,7 +52,7 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
-    public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
+    public  List<JSONObject> getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
         List<Shop> findShop;
         if(sort.equals("rating")){
              findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY());
@@ -61,19 +61,10 @@ public class ShopService {
             findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
         }
         List<JSONObject> responseShopDtoList = setResponseShopDto(findShop,dto.getPage());
-
-        JSONArray jsonArray = new JSONArray(responseShopDtoList);
-        JSONObject jsonObject = setMaxPage(findShop.size());
-        jsonArray.put(jsonObject);
-        return jsonArray;
+        JSONObject object = setMaxPage(findShop.size());
+        responseShopDtoList.add(object);
+        return responseShopDtoList;
     }
-    private Rating setRating(){
-        return Rating.set();
-    }
-    private Assessment setAssessment(){
-        return Assessment.set();
-    }
-
     private JSONObject setMaxPage(int size){
         JSONObject object = new JSONObject();
         if(size/10<10)object.put("maxPage",1);
@@ -81,17 +72,23 @@ public class ShopService {
         else object.put("maxPage",size/10);
         return object;
     }
-    private List<JSONObject> setResponseShopDto(List<Shop> shops, int size){
+
+    private   List<JSONObject> setResponseShopDto(List<Shop> shops, int size){
         List<JSONObject> responseShopDtoList = new ArrayList<>();
         for(int i=0;i<shops.size();i++){
-            if(i<size*10 && i>=(size-1)*10){
+            if(i<(size+1)*10 && i>=(size)*10){
                 Review findReivewWithNotNUllImage = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-                ResponseShopByRadiusDto responseShopByRadiusDto = ResponseShopByRadiusDto.set(shops.get(i),findReivewWithNotNUllImage);
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put(String.valueOf(i),responseShopByRadiusDto);
-                responseShopDtoList.add(jsonObject);
+                JSONObject responseShopByRadiusDto = ResponseShopByRadiusDto.set(shops.get(i),findReivewWithNotNUllImage);
+                responseShopDtoList.add(responseShopByRadiusDto);
             }
         }
         return responseShopDtoList;
+    }
+
+    private Rating setRating(){
+        return Rating.set();
+    }
+    private Assessment setAssessment(){
+        return Assessment.set();
     }
 }

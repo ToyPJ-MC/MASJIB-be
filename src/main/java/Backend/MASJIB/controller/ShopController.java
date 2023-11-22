@@ -3,12 +3,17 @@ package Backend.MASJIB.controller;
 import Backend.MASJIB.shop.dto.CreateShopDto;
 import Backend.MASJIB.shop.dto.FindByShopByRadiusToSortDto;
 import Backend.MASJIB.shop.dto.ResponseShopByCreateDto;
+import Backend.MASJIB.shop.dto.ResponseShopByRadiusDto;
 import Backend.MASJIB.shop.service.ShopService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -31,11 +36,8 @@ public class ShopController {
     }
     @GetMapping("/shop/radius")
     @Operation(summary = "반경 1km 내 맛집 조회")
-    public ResponseEntity getShopByRadius(@Param("sort") String sort, @RequestBody FindByShopByRadiusToSortDto dto){
-        try{
-            return ResponseEntity.ok().body(shopService.getShopBySortWithPaging(sort, dto));
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<JSONObject>> getShopByRadius(@RequestParam("sort") String sort,FindByShopByRadiusToSortDto dto){
+        List<JSONObject> obj =shopService.getShopBySortWithPaging(sort, dto);
+        return ResponseEntity.ok().body(obj);
     }
 }
