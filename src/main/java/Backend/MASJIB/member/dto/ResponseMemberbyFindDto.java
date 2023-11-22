@@ -1,18 +1,13 @@
 package Backend.MASJIB.member.dto;
 
-import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.member.entity.Member;
-import Backend.MASJIB.review.dto.ResponseReviewWithImagePathDto;
 import Backend.MASJIB.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter

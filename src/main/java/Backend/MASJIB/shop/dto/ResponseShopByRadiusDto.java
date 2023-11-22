@@ -36,7 +36,7 @@ public class ResponseShopByRadiusDto {
             obj.put("recentReview",review.getComment());
         }
         obj.put("reviewCount",shop.getReviewCount());
-
+        System.out.println(obj);
         return obj;
     }
     public static String toString(ResponseShopByRadiusDto dto, int index){

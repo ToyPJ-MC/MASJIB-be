@@ -52,38 +52,24 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
-    public  List<JSONObject> getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
-        List<Shop> findShop;
+    public  Page<Shop> getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
+        Page<Shop> findShop;
         if(sort.equals("rating")){
-             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY());
+             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY(),PageRequest.of(dto.getPage()-1,10));
         }
         else{
-            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
+            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort,PageRequest.of(dto.getPage()-1,10));
         }
-        List<JSONObject> responseShopDtoList = setResponseShopDto(findShop,dto.getPage());
-        JSONObject object = setMaxPage(findShop.size());
-        responseShopDtoList.add(object);
-        return responseShopDtoList;
+        return findShop;
     }
-    private JSONObject setMaxPage(int size){
-        JSONObject object = new JSONObject();
-        if(size/10<10)object.put("maxPage",1);
-        else if(size%10!=0) object.put("maxPage",size/10+1);
-        else object.put("maxPage",size/10);
-        return object;
+    private int setMaxPage(int size){
+        int maxPage=0;
+        if(size/10<10)maxPage =1;
+        else if(size%10!=0) maxPage = size/10+1;
+        else maxPage = size/10;
+        return maxPage;
     }
 
-    private   List<JSONObject> setResponseShopDto(List<Shop> shops, int size){
-        List<JSONObject> responseShopDtoList = new ArrayList<>();
-        for(int i=0;i<shops.size();i++){
-            if(i<(size+1)*10 && i>=(size)*10){
-                Review findReivewWithNotNUllImage = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-                JSONObject responseShopByRadiusDto = ResponseShopByRadiusDto.set(shops.get(i),findReivewWithNotNUllImage);
-                responseShopDtoList.add(responseShopByRadiusDto);
-            }
-        }
-        return responseShopDtoList;
-    }
 
     private Rating setRating(){
         return Rating.set();

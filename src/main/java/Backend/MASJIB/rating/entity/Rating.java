@@ -1,5 +1,6 @@
 package Backend.MASJIB.rating.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class Rating {
     private long half;
     private long zero;
     private long count;
-
+    @JsonIgnore
     public static Rating set(){
         return  Rating.builder()
                 .five(0L)
@@ -43,7 +44,7 @@ public class Rating {
                 .count(0L)
                 .build();
     }
-
+    @JsonIgnore
     public static Double CalculationRating(Rating rating){
         Double result = 0.0;
         result = (rating.getFive()*5.0+rating.getFourHalf()*4.5+rating.getFour()*4.0+rating.getThreeHalf()*3.5
@@ -51,6 +52,7 @@ public class Rating {
                 +rating.getHalf()*0.5+rating.getZero()*0.0)/rating.getCount();
         return result;
     }
+    @JsonIgnore
     public Double getRating(){
         Double result = 0.0;
         result = (this.getFive()*5.0+this.getFourHalf()*4.5+this.getFour()*4.0+this.getThreeHalf()*3.5

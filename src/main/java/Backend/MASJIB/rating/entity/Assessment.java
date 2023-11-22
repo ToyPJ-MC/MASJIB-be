@@ -1,5 +1,6 @@
 package Backend.MASJIB.rating.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +23,7 @@ public class Assessment {
     private long badHygiene;
     private long kindness;
     private long unkindness;
-
+    @JsonIgnore
     public static Assessment set(){
         return Assessment.builder()
                 .goodTaste(0L)

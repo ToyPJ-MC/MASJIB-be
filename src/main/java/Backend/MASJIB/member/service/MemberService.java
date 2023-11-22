@@ -27,7 +27,7 @@ public class MemberService {
         if(!memberRepository.existsById(id)){
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
-        Optional<Member> findMember = memberRepository.findById(id);    
+        Optional<Member> findMember = memberRepository.findById(id);
         return ResponseMemberbyFindDto.set(findMember.get());
     }
     @Transactional

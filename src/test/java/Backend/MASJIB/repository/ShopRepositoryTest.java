@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 
 import java.awt.geom.Point2D;
@@ -130,14 +132,7 @@ public class ShopRepositoryTest {
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
-        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",127.030619,37.496568);// 내림차순
-        int page = 1;
-        int size =10;
-        for(int i=0;i<findShopByRating.size();i++){
-            if(i<page*size){
-                System.out.println(i+" : "+findShopByRating.get(i).getName());
-            }
-        }
+        Page<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",127.030619,37.496568, PageRequest.of(0,10));// 내림차순
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Test")
