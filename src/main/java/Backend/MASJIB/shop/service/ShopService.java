@@ -62,14 +62,6 @@ public class ShopService {
         }
         return findShop;
     }
-    private int setMaxPage(int size){
-        int maxPage=0;
-        if(size/10<10)maxPage =1;
-        else if(size%10!=0) maxPage = size/10+1;
-        else maxPage = size/10;
-        return maxPage;
-    }
-
 
     private Rating setRating(){
         return Rating.set();
