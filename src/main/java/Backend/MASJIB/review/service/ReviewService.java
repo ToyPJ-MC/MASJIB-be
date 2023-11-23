@@ -80,6 +80,7 @@ public class ReviewService {
                         .path(path)
                         .review(review)
                         .createTime(LocalDateTime.now())
+                        .shopId(findShop.get().getId())
                         .build();
                 imageRepository.save(image);
                 review.getImages().add(image);

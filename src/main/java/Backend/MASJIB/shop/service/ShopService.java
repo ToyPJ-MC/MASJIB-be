@@ -16,6 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
+    @Transactional
     public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
         List<Shop> findShop;
         if(sort.equals("rating")){
@@ -79,7 +81,7 @@ public class ShopService {
         for(int i=0;i<shops.size();i++){
            if((size-1)*10 <=i&& i<size*10){
                Review review = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-               ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review);
+               ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review,review.getImages().get(0));
                 map.put(String.valueOf(i+1),dto);
            }
         }

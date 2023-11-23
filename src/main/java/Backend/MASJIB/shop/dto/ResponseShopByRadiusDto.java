@@ -1,5 +1,6 @@
 package Backend.MASJIB.shop.dto;
 
+import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.shop.entity.Shop;
@@ -22,7 +23,7 @@ public class ResponseShopByRadiusDto {
     private long followCount;
     private Double totalRating;
 
-    public static ResponseShopByRadiusDto set(Shop shop, Review review){
+    public static ResponseShopByRadiusDto set(Shop shop, Review review, Image image){
         ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
         if(review == null) {
             dto.setRecentReview("코멘트가 없습니다.");
@@ -30,7 +31,8 @@ public class ResponseShopByRadiusDto {
         }
         else{
             dto.setRecentReview(review.getComment());
-            dto.setImage(review.getImages().get(0).getPath());
+            dto.setImage(image.getPath());
+            System.out.println("시발 "+image.getPath());
         }
         dto.setName(shop.getName());
         dto.setKind(shop.getKind());
@@ -41,7 +43,7 @@ public class ResponseShopByRadiusDto {
         dto.setFollowCount(shop.getFollowCount());
         Double totalRating = Rating.CalculationRating(shop.getRating());
         if(totalRating.isNaN()) dto.setTotalRating(0.0);
-        else dto.setTotalRating(totalRating);
+        else dto.setTotalRating(Double.valueOf(String.format("%.2f", totalRating)));
         return dto;
     }
 }

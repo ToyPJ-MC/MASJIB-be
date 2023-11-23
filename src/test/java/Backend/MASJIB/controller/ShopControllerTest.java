@@ -18,9 +18,9 @@ public class ShopControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @DisplayName("Find Shop Within a 1KM Radius Of The Shop API")
+    /*@DisplayName("Find Shop Within a 1KM Radius Of The Shop API")
     @Test
     void 음식점_반경_1km_내_조회()throws Exception {
 
-    }
+    }*/
 }

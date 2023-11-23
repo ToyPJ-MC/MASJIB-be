@@ -2,7 +2,7 @@ package Backend.MASJIB.member.service;
 
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.dto.ResponseMemberByCreateDto;
-import Backend.MASJIB.member.dto.ResponseMemberbyFindDto;
+import Backend.MASJIB.member.dto.ResponseMemberbyFindwithReviewDto;
 import Backend.MASJIB.member.entity.Member;
 import Backend.MASJIB.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
     @Transactional
-    public ResponseMemberbyFindDto findMemberById(Long id){
+    public ResponseMemberbyFindwithReviewDto findMemberById(Long id){
         if(!memberRepository.existsById(id)){
             throw new RuntimeException("존재하지 않는 회원입니다.");
         }
         Optional<Member> findMember = memberRepository.findById(id);
-        return ResponseMemberbyFindDto.set(findMember.get());
+        return ResponseMemberbyFindwithReviewDto.set(findMember.get());
     }
     @Transactional
     public ResponseMemberByCreateDto createMember(CreateMemberDto dto){

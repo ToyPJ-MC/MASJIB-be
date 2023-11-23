@@ -1,9 +1,10 @@
 package Backend.MASJIB.controller;
 
 import Backend.MASJIB.member.dto.CreateMemberDto;
-import Backend.MASJIB.member.dto.ResponseMemberbyFindDto;
+import Backend.MASJIB.member.dto.ResponseMemberbyFindwithReviewDto;
 import Backend.MASJIB.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.snippet.Attributes.key;
 
@@ -96,7 +96,7 @@ public class MemberControllerTest {
     void 멤버_컨트롤러_멤버_조회_테스트() throws Exception {
 
         given(memberService.findMemberById(1L))
-                .willReturn(new ResponseMemberbyFindDto(1L, "지우","test@test.com","포켓몬 마스터", LocalDateTime.now().withNano(0),new ArrayList<>()));
+                .willReturn(new ResponseMemberbyFindwithReviewDto(1L, "지우","test@test.com","포켓몬 마스터",new JSONArray()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/member/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -112,7 +112,6 @@ public class MemberControllerTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("멤버의 이름"),
                                 fieldWithPath("nickName").type(JsonFieldType.STRING).description("멤버의 고유 닉네임"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("멤버의 고유 이메일"),
-                                fieldWithPath("createTime").type(JsonFieldType.STRING).description("멤버 가입 시간"),
                                 fieldWithPath("reviews").type(JsonFieldType.ARRAY).description("등록된 리뷰정보와 images")
                         )
                 ));
