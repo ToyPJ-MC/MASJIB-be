@@ -22,6 +22,7 @@ public class ResponseShopByRadiusDto {
     private long reviewCount;
     private long followCount;
     private Double totalRating;
+    private long shopId;
 
     public static ResponseShopByRadiusDto set(Shop shop, Review review, Image image){
         ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
@@ -41,6 +42,7 @@ public class ResponseShopByRadiusDto {
         dto.setY(shop.getY());
         dto.setReviewCount(shop.getReviewCount());
         dto.setFollowCount(shop.getFollowCount());
+        dto.setShopId(shop.getId());
         Double totalRating = Rating.CalculationRating(shop.getRating());
         if(totalRating.isNaN()) dto.setTotalRating(0.0);
         else dto.setTotalRating(Double.valueOf(String.format("%.2f", totalRating)));

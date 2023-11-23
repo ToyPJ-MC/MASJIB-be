@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,6 +51,7 @@ public class ReviewService {
     }
     @Transactional
     public ResponseReviewByCreateDto createReview(CreateReviewDto dto) {
+
         Optional<Member> findMember = memberRepository.findById(dto.getMemberId());
         findMember.orElseThrow(RuntimeException::new);
 
@@ -85,6 +87,15 @@ public class ReviewService {
                 imageRepository.save(image);
                 review.getImages().add(image);
             }
+            for(int i=0;i<dto.getFiles().size();i++){
+                try {
+                    FileOutputStream fileOutputStream = new FileOutputStream(paths.get(i));
+                    fileOutputStream.write(dto.getFiles().get(i).getBytes());
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         findMember.get().getReviews().add(review);
         return ResponseReviewByCreateDto.set(review);
@@ -100,6 +111,7 @@ public class ReviewService {
             dir.mkdirs();
         }
         for(int i=0;i<file.size();i++){
+
             String outputFileName = name+"-"+file.get(i).getOriginalFilename();
             Path outputFile = Paths.get(uploadDir, outputFileName);
             paths.add(outputFile.toString());
