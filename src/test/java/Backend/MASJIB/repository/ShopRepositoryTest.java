@@ -132,7 +132,7 @@ public class ShopRepositoryTest {
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
-        Page<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",127.030619,37.496568, PageRequest.of(0,10));// 내림차순
+        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",127.030619,37.496568);// 내림차순
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Test")

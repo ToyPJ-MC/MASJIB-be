@@ -2,11 +2,8 @@ package Backend.MASJIB.controller;
 
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.dto.ResponseMemberbyFindDto;
-import Backend.MASJIB.member.entity.Member;
 import Backend.MASJIB.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.models.parameters.PathParameter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,7 +95,7 @@ public class MemberControllerTest {
     @DisplayName("MemberController Find Member By Member Id Test")
     void 멤버_컨트롤러_멤버_조회_테스트() throws Exception {
 
-       /* given(memberService.findMemberById(1L))
+        given(memberService.findMemberById(1L))
                 .willReturn(new ResponseMemberbyFindDto(1L, "지우","test@test.com","포켓몬 마스터", LocalDateTime.now().withNano(0),new ArrayList<>()));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/member/1")
@@ -118,6 +115,6 @@ public class MemberControllerTest {
                                 fieldWithPath("createTime").type(JsonFieldType.STRING).description("멤버 가입 시간"),
                                 fieldWithPath("reviews").type(JsonFieldType.ARRAY).description("등록된 리뷰정보와 images")
                         )
-                ));*/
+                ));
     }
 }
