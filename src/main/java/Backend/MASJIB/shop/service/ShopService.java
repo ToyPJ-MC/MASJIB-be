@@ -11,26 +11,27 @@ import Backend.MASJIB.shop.dto.ResponseShopByCreateDto;
 import Backend.MASJIB.shop.dto.ResponseShopByRadiusDto;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
-import com.mysql.cj.xdevapi.JsonArray;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
 public class ShopService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
+    private final ImageRepository imageRepository;
     @Autowired
-    public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository) {
+    public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository, ImageRepository imageRepository) {
         this.shopRepository = shopRepository;
         this.reviewRepository = reviewRepository;
+        this.imageRepository = imageRepository;
     }
     public ResponseShopByCreateDto createShop(CreateShopDto dto){
         if(shopRepository.existsByAddress(dto.getAddress())){
@@ -52,17 +53,38 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
-    public  Page<Shop> getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
-        Page<Shop> findShop;
+    public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
+        List<Shop> findShop;
         if(sort.equals("rating")){
-             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY(),PageRequest.of(dto.getPage()-1,10));
+             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY());
         }
         else{
-            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort,PageRequest.of(dto.getPage()-1,10));
+            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
         }
-        return findShop;
+        Map<String,ResponseShopByRadiusDto> shopList = setResponseShop(findShop, dto.getPage());
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("totalPage",totalPage(findShop.size()));
+        jsonArray.add(shopList);
+        jsonArray.add(jsonObject);
+        return jsonArray;
     }
-
+    private int totalPage(int size){
+        if(size<10 && size>=0) return 1;
+        else if(size%10!=0)return size/10+1;
+        else return size/10;
+    }
+    private   Map<String,ResponseShopByRadiusDto> setResponseShop(List<Shop> shops,int size){
+        Map<String,ResponseShopByRadiusDto> map = new HashMap<>();
+        for(int i=0;i<shops.size();i++){
+           if((size-1)*10 <=i&& i<size*10){
+               Review review = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
+               ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review);
+                map.put(String.valueOf(i+1),dto);
+           }
+        }
+        return map;
+    }
     private Rating setRating(){
         return Rating.set();
     }

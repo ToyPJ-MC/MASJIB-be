@@ -34,15 +34,9 @@ dependencies {
 	implementation ("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16")
 	implementation("org.springframework.boot:spring-boot-starter-logging:3.1.5");
 
-	implementation("org.springframework.boot:spring-boot-starter-validation:3.1.5")
-
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-	implementation("org.springframework.boot:spring-boot-starter-batch:3.1.5")
-	implementation("commons-io:commons-io:2.15.0")
-
-
 	implementation("org.locationtech.proj4j:proj4j:1.2.2")
-	implementation("org.json:json:20231013")
+	implementation("com.googlecode.json-simple:json-simple:1.1.1")
 
 	implementation("com.mysql:mysql-connector-j:8.1.0")
 	compileOnly("org.projectlombok:lombok:1.18.28")

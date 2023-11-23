@@ -1,10 +1,10 @@
 package Backend.MASJIB.shop.dto;
 
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.shop.entity.Shop;
 import lombok.Getter;
 import lombok.Setter;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -19,36 +19,29 @@ public class ResponseShopByRadiusDto {
     private String image;
     private String recentReview;
     private long reviewCount;
+    private long followCount;
+    private Double totalRating;
 
-    public static JSONObject set(Shop shop, Review review){
-        JSONObject obj = new JSONObject();
-        obj.put("name",shop.getName());
-        obj.put("address",shop.getAddress());
-        obj.put("x",shop.getX());
-        obj.put("y",shop.getY());
-        obj.put("kind",shop.getKind());
-        if(review ==null){
-            obj.put("image","존재하지 않습니다.");
-            obj.put("recentReview","최근 리뷰가 없습니다.");
+    public static ResponseShopByRadiusDto set(Shop shop, Review review){
+        ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
+        if(review == null) {
+            dto.setRecentReview("코멘트가 없습니다.");
+            dto.setImage("이미지가 없습니다.");
         }
         else{
-            obj.put("image",review.getImages().get(0).getPath());
-            obj.put("recentReview",review.getComment());
+            dto.setRecentReview(review.getComment());
+            dto.setImage(review.getImages().get(0).getPath());
         }
-        obj.put("reviewCount",shop.getReviewCount());
-        System.out.println(obj);
-        return obj;
-    }
-    public static String toString(ResponseShopByRadiusDto dto, int index){
-        return index + " {"+
-                "name='" + dto.getName() + '\'' +
-                ", address='" + dto.getAddress() + '\'' +
-                ", x=" + dto.getX() +
-                ", y=" + dto.getY() +
-                ", kind='" + dto.getKind() + '\'' +
-                ", image='" + dto.getImage() + '\'' +
-                ", recentReview='" + dto.getRecentReview() + '\'' +
-                ", reviewCount=" + dto.getReviewCount() +
-                '}';
+        dto.setName(shop.getName());
+        dto.setKind(shop.getKind());
+        dto.setAddress(shop.getAddress());
+        dto.setX(shop.getX());
+        dto.setY(shop.getY());
+        dto.setReviewCount(shop.getReviewCount());
+        dto.setFollowCount(shop.getFollowCount());
+        Double totalRating = Rating.CalculationRating(shop.getRating());
+        if(totalRating.isNaN()) dto.setTotalRating(0.0);
+        else dto.setTotalRating(totalRating);
+        return dto;
     }
 }
