@@ -30,6 +30,7 @@ dependencies {
 	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4")
 
 	implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.0")
 	implementation("org.springframework.boot:spring-boot-starter-log4j2")
 	implementation ("org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16")
 	implementation("org.springframework.boot:spring-boot-starter-logging:3.1.5");
@@ -40,6 +41,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-batch:3.1.5")
 	implementation("commons-io:commons-io:2.15.0")
 
+
+	implementation("org.locationtech.proj4j:proj4j:1.2.2")
+	implementation("com.googlecode.json-simple:json-simple:1.1.1")
+
 	implementation("com.mysql:mysql-connector-j:8.1.0")
 	compileOnly("org.projectlombok:lombok:1.18.28")
 
@@ -47,8 +52,9 @@ dependencies {
 	testAnnotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0")
+	testImplementation("org.mockito:mockito-core:5.7.0")
 	//testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
-	//testImplementation("io.kotest:kotest-runner-junit5:4.6.2")
+	testImplementation("io.kotest:kotest-runner-junit5:4.6.2")
 	asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
 
 	testImplementation("org.springframework.batch:spring-batch-test:5.0.3")

@@ -1,7 +1,16 @@
 package Backend.MASJIB.upload.xml;
 
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
+import Backend.MASJIB.rating.repository.AssessmentRepository;
+import Backend.MASJIB.rating.repository.RatingRepository;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+import org.locationtech.proj4j.BasicCoordinateTransform;
+import org.locationtech.proj4j.CRSFactory;
+import org.locationtech.proj4j.CoordinateReferenceSystem;
+import org.locationtech.proj4j.ProjCoordinate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.Attributes;
@@ -14,13 +23,19 @@ import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UploadShopXmlService {
     private final ShopRepository shopRepository;
-
-    public UploadShopXmlService(ShopRepository shopRepository) {
+    private final AssessmentRepository assessmentRepository;
+    private final RatingRepository ratingRepository;
+    @Autowired
+    public UploadShopXmlService(ShopRepository shopRepository, AssessmentRepository assessmentRepository, RatingRepository ratingRepository) {
         this.shopRepository = shopRepository;
+        this.assessmentRepository = assessmentRepository;
+        this.ratingRepository = ratingRepository;
     }
 
     public void upLoadShopXml(MultipartFile file){
@@ -77,18 +92,53 @@ public class UploadShopXmlService {
         public void endElement(String uri, String localName, String qName) throws SAXException {
             // 종료 태그를 만났을 때 실행되는 코드
             if (qName.equals("row") && !status.equals("폐업")) {
+                List<Double> result = changeESPG_5174(Double.valueOf(x),Double.valueOf(y));
+                Rating rating =Rating.set();
+                Assessment assessment = Assessment.set();
                 Shop shop = Shop.builder()
                         .name(name)
                         .address(address)
                         .kind(category)
-                        .x(Double.valueOf(x))
-                        .y(Double.valueOf(y))
+                        .x(result.get(0))
+                        .y(result.get(1))
                         .reviewCount(0)
-                        .rating(new HashMap<>())
+                        .rating(rating)
                         .status(status)
+                        .assessment(assessment)
                         .build();
+
+                assessmentRepository.save(assessment);
+                ratingRepository.save(rating);
                 shopRepository.save(shop);
             }
+        }
+        private List<Double> changeESPG_5174(Double x, Double y){
+            List<Double> result = new ArrayList<>();
+
+            CRSFactory crsFactory = new CRSFactory();
+
+            // WGS84 system 정의
+            String wgs84Name = "WGS84";
+            String wgs84Proj = "+proj=longlat +datum=WGS84 +no_defs";
+            CoordinateReferenceSystem wgs84System = crsFactory.createFromParameters(wgs84Name, wgs84Proj);
+
+            // UTMK system 정의
+            String epsg2097Name = "ESPG:5174";
+            String epsg2097Proj = "+proj=tmerc +lat_0=38 +lon_0=127.0028902777778 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43";
+            CoordinateReferenceSystem utmkSystem = crsFactory.createFromParameters(epsg2097Name, epsg2097Proj);
+
+            ProjCoordinate p = new ProjCoordinate();
+            p.x = x;
+            p.y = y;
+
+            ProjCoordinate p2 = new ProjCoordinate();
+            BasicCoordinateTransform coordinateTransform = new BasicCoordinateTransform(utmkSystem,wgs84System);
+
+            coordinateTransform.transform(p, p2);
+
+            result.add(p2.x);
+            result.add(p2.y);
+            return result;
         }
     }
 }

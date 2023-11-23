@@ -30,8 +30,14 @@ public class Review {
     @JoinColumn(name="member_id",nullable = false)
     @JsonIgnore
     private Member member;
-
+    //rating
     private double rating;
+
+    //assessment
+    private String taste;
+    private String hygiene;
+    private String kindness;
+
     @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "review")
     @Builder.Default
     @JsonIgnore
@@ -41,5 +47,7 @@ public class Review {
     @JoinColumn(name="shop_id",nullable = false)
     @JsonIgnore
     private Shop shop;
+
+
 
 }

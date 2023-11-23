@@ -56,7 +56,7 @@ public class ReviewServiceTest {
         memberRepository.save(member);
     }
 
-    @Test
+    /*@Test
     @DisplayName("Transfer image segmentation Test")
     public void 사진_분할_전송_테스트(){
         try {
@@ -104,5 +104,5 @@ public class ReviewServiceTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 }

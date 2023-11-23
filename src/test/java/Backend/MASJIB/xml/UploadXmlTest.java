@@ -1,5 +1,7 @@
 package Backend.MASJIB.xml;
 
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,7 @@ public class UploadXmlTest {
         String status ="";
         String element="";
         String category="";
+
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             // 시작 태그를 만났을 때 실행되는 코드
@@ -77,7 +80,8 @@ public class UploadXmlTest {
                         .x(Double.valueOf(x))
                         .y(Double.valueOf(y))
                         .reviewCount(0)
-                        .rating(new HashMap<>())
+                        .rating(Rating.set())
+                        .assessment(Assessment.set())
                         .status(status)
                         .build();
                 shopRepository.save(shop);

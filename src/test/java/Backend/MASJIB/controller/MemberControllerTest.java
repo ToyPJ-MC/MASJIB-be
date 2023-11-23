@@ -2,11 +2,8 @@ package Backend.MASJIB.controller;
 
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.dto.ResponseMemberbyFindDto;
-import Backend.MASJIB.member.entity.Member;
 import Backend.MASJIB.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.models.parameters.PathParameter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

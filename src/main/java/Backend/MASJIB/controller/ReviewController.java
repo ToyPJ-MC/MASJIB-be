@@ -24,7 +24,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-
 public class ReviewController {
     private final ReviewService reviewService;
 
@@ -32,15 +31,15 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping(value = "/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.MULTIPART_FORM_DATA_VALUE) // 사진의 경우
+    @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 사진의 경우
     @Operation(summary = "리뷰 등록")
     public ResponseEntity createReview(@ModelAttribute CreateReviewDto dto){
-        try {
+        try{
             ResponseReviewByCreateDto returnDto =reviewService.createReview(dto);
+            System.out.println(returnDto);
             return ResponseEntity.ok().body(returnDto);
-            //return ResponseEntity.ok().body("성공");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");
         }
     }
 }

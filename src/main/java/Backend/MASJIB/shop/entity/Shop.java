@@ -1,7 +1,11 @@
 package Backend.MASJIB.shop.entity;
 
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +32,10 @@ public class Shop {
     private long followCount;
 
     private String kind;
-    @ElementCollection
-    private Map<Double,Long> rating = new HashMap<>();
+
+    @OneToOne
+    private Rating rating;
+    @OneToOne
+    private Assessment assessment;
 
 }

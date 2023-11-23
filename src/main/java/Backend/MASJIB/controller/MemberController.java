@@ -42,7 +42,7 @@ public class MemberController {
         }
     }
     @GetMapping("/{id}")
-    @Operation(summary = "아이디로 멤버 id를 사용한 전체 조회",description = "멤버 아이디를 통해 해당 멤버의 리뷰정보까지 조회")
+    @Operation(summary = "아이디로 멤버 id를 사용한 전체 조회",description = "멤버 아이디를 통해 해당 멤버의 리뷰 정보까지 조회")
     public ResponseEntity getMemberById(@PathVariable Long id){
         try{
             ResponseMemberbyFindDto member=memberService.findMemberById(id);
