@@ -57,6 +57,7 @@ public class ReviewService {
         findShop.orElseThrow(RuntimeException::new);
         setRatingToShop(findShop.get(),dto.getRating());
         setAssessment(findShop.get(),dto.getTaste(),dto.getHygiene(),dto.getKindness());
+        shopRepository.save(findShop.get());
 
         Review review = Review.builder()
                 .comment(dto.getComment())
@@ -70,6 +71,8 @@ public class ReviewService {
                 .taste(dto.getTaste())
                 .build();
 
+        reviewRepository.save(review);
+
         if(!dto.getFiles().isEmpty()){
             List<String> paths = createImagesPath(dto.getFiles(),findMember.get().getNickname());
             for(String path : paths){
@@ -78,14 +81,10 @@ public class ReviewService {
                         .review(review)
                         .createTime(LocalDateTime.now())
                         .build();
+                imageRepository.save(image);
                 review.getImages().add(image);
             }
-            findShop.get().setReviewCount(findShop.get().getReviewCount()+1);
         }
-
-        reviewRepository.save(review);
-        shopRepository.save(findShop.get());
-
         findMember.get().getReviews().add(review);
         return ResponseReviewByCreateDto.set(review);
     }

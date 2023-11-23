@@ -9,6 +9,7 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+    default-property-inclusion: non_null
 
   mvc:
     pathmatch:
@@ -19,3 +20,5 @@ logging:
   http:
     multipart:
       enabled: true
+
+

@@ -22,6 +22,5 @@ public class ShopControllerTest {
     @Test
     void 음식점_반경_1km_내_조회()throws Exception {
 
-
     }
 }

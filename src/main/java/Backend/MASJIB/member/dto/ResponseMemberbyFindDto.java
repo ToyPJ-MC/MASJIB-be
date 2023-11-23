@@ -24,6 +24,7 @@ public class ResponseMemberbyFindDto {
     private LocalDateTime createTime;
 
     private List<Review> reviews = new ArrayList<>();
+
     public static ResponseMemberbyFindDto set(Member member){
         ResponseMemberbyFindDto createDto = new ResponseMemberbyFindDto();
         createDto.setId(member.getId());
