@@ -16,6 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
+    @Transactional
     public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
         List<Shop> findShop;
         if(sort.equals("rating")){
@@ -79,8 +81,21 @@ public class ShopService {
         for(int i=0;i<shops.size();i++){
            if((size-1)*10 <=i&& i<size*10){
                Review review = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-               ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review);
-                map.put(String.valueOf(i+1),dto);
+               if (review == null) {
+                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), "등록된 리뷰가 없습니다.", "등록된 사진이 없습니다.");
+                   map.put(String.valueOf(i + 1), dto);
+               }
+               else{
+                   if(review.getImages().size()==0){
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),"등록된 사진이 없습니다.");
+                       map.put(String.valueOf(i+1),dto);
+                   }
+                   else{
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),review.getImages().get(0).getPath());
+                       map.put(String.valueOf(i+1),dto);
+                   }
+               }
+
            }
         }
         return map;

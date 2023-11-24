@@ -21,4 +21,5 @@ logging:
     multipart:
       enabled: true
 
+uploadPath: file:./images/
 

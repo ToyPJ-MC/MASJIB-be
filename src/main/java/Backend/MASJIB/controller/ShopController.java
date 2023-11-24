@@ -34,10 +34,10 @@ public class ShopController {
     public ResponseEntity getShopByRadius(@RequestParam("sort") String sort,FindByShopByRadiusToSortDto dto){
        try{
            JSONArray shop =shopService.getShopBySortWithPaging(sort, dto);
-           System.out.println(shop);
            return ResponseEntity.ok().body(shop);
        }catch (Exception e){
            return ResponseEntity.badRequest().body(e.getMessage());
        }
     }
+
 }
