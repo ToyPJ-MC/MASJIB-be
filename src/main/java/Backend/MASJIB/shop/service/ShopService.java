@@ -81,8 +81,21 @@ public class ShopService {
         for(int i=0;i<shops.size();i++){
            if((size-1)*10 <=i&& i<size*10){
                Review review = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-               ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review,review.getImages().get(0));
-                map.put(String.valueOf(i+1),dto);
+               if (review == null) {
+                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), "등록된 리뷰가 없습니다.", "등록된 사진이 없습니다.");
+                   map.put(String.valueOf(i + 1), dto);
+               }
+               else{
+                   if(review.getImages().size()==0){
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),"등록된 사진이 없습니다.");
+                       map.put(String.valueOf(i+1),dto);
+                   }
+                   else{
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),review.getImages().get(0).getPath());
+                       map.put(String.valueOf(i+1),dto);
+                   }
+               }
+
            }
         }
         return map;

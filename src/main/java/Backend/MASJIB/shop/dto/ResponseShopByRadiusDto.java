@@ -4,13 +4,17 @@ import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.shop.entity.Shop;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResponseShopByRadiusDto {
     private String name;
     private String address;
@@ -24,17 +28,10 @@ public class ResponseShopByRadiusDto {
     private Double totalRating;
     private long shopId;
 
-    public static ResponseShopByRadiusDto set(Shop shop, Review review, Image image){
+    public static ResponseShopByRadiusDto set(Shop shop, String review, String image){
         ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
-        if(review == null) {
-            dto.setRecentReview("코멘트가 없습니다.");
-            dto.setImage("이미지가 없습니다.");
-        }
-        else{
-            dto.setRecentReview(review.getComment());
-            dto.setImage(image.getPath());
-            System.out.println("시발 "+image.getPath());
-        }
+        dto.setRecentReview(review);
+        dto.setImage(image);
         dto.setName(shop.getName());
         dto.setKind(shop.getKind());
         dto.setAddress(shop.getAddress());

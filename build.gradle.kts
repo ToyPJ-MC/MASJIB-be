@@ -41,6 +41,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-batch:3.1.5")
 	implementation("commons-io:commons-io:2.15.0")
 
+	implementation("org.springframework.security:spring-security-oauth2-client:5.7.5")
 
 	implementation("org.locationtech.proj4j:proj4j:1.2.2")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")

@@ -28,9 +28,10 @@ public class ResponseMemberbyFindwithReviewDto {
         createDto.setName(member.getName());
         createDto.setNickName(member.getNickname());
         createDto.setEmail(member.getEmail());
-        createDto.setReviews(setReviewWithImage(member.getReviews()));
-
-
+        if(member.getReviews()==null){
+            createDto.setReviews(new JSONArray());
+        }
+        else createDto.setReviews(setReviewWithImage(member.getReviews()));
         return createDto;
     }
     private static JSONArray setReviewWithImage(List<Review> review){
