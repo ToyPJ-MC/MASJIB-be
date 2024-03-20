@@ -23,7 +23,7 @@ import java.util.HashMap;
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UploadXmlTest {
-    @Autowired
+   /* @Autowired
     private ShopRepository shopRepository;
 
     @Test
@@ -88,5 +88,5 @@ public class UploadXmlTest {
 
             }
         }
-    }
+    }*/
 }

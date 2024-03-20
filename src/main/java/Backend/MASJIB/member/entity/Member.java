@@ -27,9 +27,13 @@ public class Member {
     private String email;
     //@Column(nullable = false)
     private String nickname;
-
     //@Column(nullable = false)
     private LocalDateTime createTime;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_role")
+    private Role role = Role.NONE;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @Builder.Default

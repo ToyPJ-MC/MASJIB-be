@@ -13,22 +13,15 @@ ifndef::snippets[]
 endif::[]
 
 
+
 == Member API
 
-=== 멤버 등록 API
-==== Request
-include::{snippets}/member/create/http-request.adoc[]
-
-include::{snippets}/member/create/request-fields.adoc[]
-
-==== Response
-include::{snippets}/member/create/http-response.adoc[]
-
-=== 조회 By Id API
+=== 등록된 멤버 조회 API
 ==== Request
 include::{snippets}/member/find/http-request.adoc[]
+등록된 멤버 아이디를 통한 조회
 
-==== ResponseMemberDTO
+==== Response
 include::{snippets}/member/find/response-body.adoc[]
 
 == Review API
@@ -42,4 +35,14 @@ include::{snippets}/review/create/request-fields.adoc[]
 리뷰 등록 시 사진은 필수값이 아님
 
 ==== Response
-include::{snippets}/review/create/http-response.adoc[]
+include::{snippets}/review/create/response-body.adoc[]
+
+== Shop API
+=== 반경 1km 이내의 가게 조회
+==== Request
+include::{snippets}/shop/radius/http-request.adoc[]
+
+include::{snippets}/shop/radius/request-fields.adoc[]
+
+==== Response
+include::{snippets}/shop/radius/response-body.adoc[]

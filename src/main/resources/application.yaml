@@ -1,9 +1,12 @@
 spring:
   config:
     import:
+      - application-redis.yaml
+      - application-oauth.yaml
       - application-jasypt.yaml
       - application-mysql.yaml
       - application-apidocs.yaml
+      - application-jwt.yaml
   main:
     allow-bean-definition-overriding: true
   jackson:

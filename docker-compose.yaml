@@ -12,7 +12,11 @@ services:
     restart: always
     networks:
       - masjib-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # host.docker.internal를 -> localhost에서도 접속하기 위해 사용
 
 networks:
   masjib-network:  # 기존에 생성된 네트워크와 동일한 이름 사용
     external: true  # 외부 네트워크로 선언
+
+

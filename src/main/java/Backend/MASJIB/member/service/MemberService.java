@@ -1,5 +1,6 @@
 package Backend.MASJIB.member.service;
 
+import Backend.MASJIB.jwt.provider.TokenProvider;
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.dto.ResponseMemberByCreateDto;
 import Backend.MASJIB.member.dto.ResponseMemberbyFindwithReviewDto;
@@ -18,9 +19,11 @@ import java.util.Optional;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final TokenProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, TokenProvider jwtProvider) {
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
     @Transactional
     public ResponseMemberbyFindwithReviewDto findMemberById(Long id){
@@ -32,7 +35,6 @@ public class MemberService {
     }
     @Transactional
     public ResponseMemberByCreateDto createMember(CreateMemberDto dto){
-
         if(memberRepository.existsByEmail(dto.getEmail())){
            throw new RuntimeException("이미 존재하는 회원입니다.");
         }

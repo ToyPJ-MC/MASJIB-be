@@ -31,12 +31,11 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // 사진의 경우
+    @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE) // 사진의 경우
     @Operation(summary = "리뷰 등록")
     public ResponseEntity createReview(@ModelAttribute CreateReviewDto dto){
         try{
             ResponseReviewByCreateDto returnDto =reviewService.createReview(dto);
-            System.out.println(returnDto);
             return ResponseEntity.ok().body(returnDto);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("실패");

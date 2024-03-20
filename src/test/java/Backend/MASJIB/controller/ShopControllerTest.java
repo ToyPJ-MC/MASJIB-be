@@ -1,5 +1,7 @@
 package Backend.MASJIB.controller;
 
+import Backend.MASJIB.config.SecurityConfig;
+import Backend.MASJIB.jwt.provider.TokenProvider;
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
@@ -14,13 +16,21 @@ import org.json.simple.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,7 +44,12 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @AutoConfigureRestDocs
-@WebMvcTest(ShopController.class)
+@WebMvcTest(value = ShopController.class,
+        excludeFilters =
+                {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+                                classes = SecurityConfig.class)}
+)
+
 public class ShopControllerTest {
 
     @Autowired
@@ -43,8 +58,11 @@ public class ShopControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private ShopService shopService;
+    @MockBean
+    private TokenProvider tokenProvider;
 
     @DisplayName("Find Shop Within a 1KM Radius Of The Shop API")
+    @WithMockUser
     @Test
     void 음식점_반경_1km_내_조회()throws Exception {
             JSONArray array = new JSONArray();

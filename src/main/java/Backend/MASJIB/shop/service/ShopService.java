@@ -1,14 +1,12 @@
 package Backend.MASJIB.shop.service;
 
+import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.review.repository.ReviewRepository;
-import Backend.MASJIB.shop.dto.CreateShopDto;
-import Backend.MASJIB.shop.dto.FindByShopByRadiusToSortDto;
-import Backend.MASJIB.shop.dto.ResponseShopByCreateDto;
-import Backend.MASJIB.shop.dto.ResponseShopByRadiusDto;
+import Backend.MASJIB.shop.dto.*;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -54,6 +50,16 @@ public class ShopService {
         shopRepository.save(createShop);
         return ResponseShopByCreateDto.set(createShop);
     }
+    public List<ResponseShopByAllDto> getShopByRadiusAll(FindByShopByRadiusAllDto dto){
+        List<Shop> findShop = shopRepository.findByShopWhtinRadiusAll(dto.getAddress(),dto.getX(),dto.getY());
+        List<ResponseShopByAllDto> dtos = new ArrayList<>();
+        for(Shop shop : findShop){
+             Image image = imageRepository.findByImageWithShopId(shop.getId());
+             if(image==null) dtos.add(ResponseShopByAllDto.set(shop,"등록된 사진이 없습니다."));
+             else dtos.add(ResponseShopByAllDto.set(shop,image.getPath()));
+        }
+        return dtos;
+    }
     @Transactional
     public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
         List<Shop> findShop;
@@ -64,6 +70,7 @@ public class ShopService {
             findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
         }
         Map<String,ResponseShopByRadiusDto> shopList = setResponseShop(findShop, dto.getPage());
+
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("totalPage",totalPage(findShop.size()));
@@ -91,11 +98,11 @@ public class ShopService {
                        map.put(String.valueOf(i+1),dto);
                    }
                    else{
+
                        ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),review.getImages().get(0).getPath());
                        map.put(String.valueOf(i+1),dto);
                    }
                }
-
            }
         }
         return map;

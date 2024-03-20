@@ -16,7 +16,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebConfiguration implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${uploadPath}")
     private String uploadPath;

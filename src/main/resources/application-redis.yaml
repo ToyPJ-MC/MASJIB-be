@@ -1,0 +1,5 @@
+spring:
+  data:
+    redis:
+      host: host.docker.internal
+      port: 6379

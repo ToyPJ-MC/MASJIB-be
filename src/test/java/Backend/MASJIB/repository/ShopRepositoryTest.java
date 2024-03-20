@@ -24,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 
 
 import java.awt.geom.Point2D;
@@ -36,6 +37,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 public class ShopRepositoryTest {
     private static final Logger logger = LoggerFactory.getLogger(ReviewRepositoryTest.class);
     @Autowired
@@ -123,12 +125,12 @@ public class ShopRepositoryTest {
 
         logger.info("result : "+result);
     }
-    /*@Test
+    @Test
     @DisplayName("Search For Shop Within a 1km Radius Based On Your Location Test")
     void 반경_1km내_음식점_조회_테스트(){
         Optional<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY("경남 김해시 인제로",12.114001,89.11414);
         findShopByAddress.orElseThrow(RuntimeException::new);
-    }*/
+    }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
@@ -186,8 +188,6 @@ public class ShopRepositoryTest {
         System.out.println(x+" , "+y);
         System.out.println(Math.abs(127.04653258456933-x));
         System.out.println(Math.abs(37.502974431241725-y));
-        /*assertThat(x).isEqualTo(127.03161500261596);
-        assertThat(y).isEqualTo(37.49665525639916);*/
     }
 
     //0.0007920188797 , 0.00837743122996
