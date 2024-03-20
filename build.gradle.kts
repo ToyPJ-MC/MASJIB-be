@@ -108,11 +108,9 @@ tasks {
 		dependsOn(asciidoctor)
 	}
 }
-val jar: Jar by tasks //plain jar 생성 방지
-val bootJar: BootJar by tasks
-
-bootJar.enabled = false
-jar.enabled = true
+tasks.named<Jar>("jar") {
+	enabled = false
+}
 
 tasks.named<Test>("test") {
 	useJUnitPlatform()
