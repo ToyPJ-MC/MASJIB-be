@@ -7,7 +7,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:log4jdbc:mysql://local_mysql:3306/masjib?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_PASSWORD: 1257
       JASYPT_ENCRYPTOR_PASSWORD: moon
     restart: always
     networks:
