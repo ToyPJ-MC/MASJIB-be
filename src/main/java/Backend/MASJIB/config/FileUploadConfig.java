@@ -8,7 +8,6 @@ import org.springframework.util.unit.DataSize;
 
 @Configuration
 public class FileUploadConfig {
-
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
