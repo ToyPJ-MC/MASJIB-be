@@ -5,7 +5,8 @@ spring:
         registration:
           kakao:
             client-id: ENC(uJE6gt1YZoJEi4IgmgMtPMrjXmrZCCgZbr+beKmI/g5VRTV2rGN7HAWFg31ylOfb)
-            redirect_uri: ENC(u+EZLCa92NLb5e98qg0iJr1ZlI4SMQUEwemxaezF+K2UV7Rn8I09mHJOiYW3WpgMhu80ABWjGpA=)
+            redirect_uri: ENC(Zan1s9m7Cjd4/jQY0KTHknMVf9I7pco8q/fbVJhE7bdO4J7kBuYhjQP4cPYoUGT4CiukWUkWb1UKaSqs2MOzXw==)
+            # local = ENC(u+EZLCa92NLb5e98qg0iJr1ZlI4SMQUEwemxaezF+K2UV7Rn8I09mHJOiYW3WpgMhu80ABWjGpA=)
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post # 클라이언트 인증 방식을 POST로 springboot 3.x에서는 기본값이 BASIC이지만 2.x에서는 기본값이 POST이다.
             client-secret: ENC(sAogZHzn/GLqeSt2BVFvK6RQrDDgGVCVDp+2dz3NO5HfP+3SNIA8S4v2IhvHqlXD)
