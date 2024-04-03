@@ -66,7 +66,6 @@ public class SecurityConfig {
                     //.requestMatchers("/api/review/**").hasAnyAuthority("ROLE_USER")
                     .requestMatchers("/api/review/**","/images/**","/swagger-ui/**","/v3/api-docs/**","api/shop/**","/swagger-resources/**","/webjars/**","/configuration/**","/v3/**","/v2/**").permitAll()
                     .requestMatchers("/api/oauth/login/**").permitAll()
-                    .requestMatchers("/api/oauth/refresh/**").permitAll()
                     .requestMatchers("/docs/index.html").permitAll()
                     .requestMatchers("/api/upload/**").permitAll()
                     .anyRequest().authenticated()

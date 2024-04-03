@@ -20,7 +20,8 @@ public class MDCLoggingFilter extends GenericFilterBean { //멀티쓰레드 환�
         try {
             chain.doFilter(request, response);
         } finally {
-            MDC.clear();
+            MDC.remove("request_id"); // MDC 클리어 대신에 해당 키를 제거하여 MDC를 유지함
+            //MDC.clear();
         }
     }
 }

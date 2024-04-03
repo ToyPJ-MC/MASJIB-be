@@ -1,5 +1,5 @@
 spring:
   data:
     redis:
-      host: host.docker.internal
+      host: redis_boot
       port: 6379
