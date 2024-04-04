@@ -26,6 +26,8 @@ configurations {
 }
 val asciidoctor by configurations.creating
 dependencies {
+	implementation("org.hibernate.orm:hibernate-core:6.4.4.Final")
+	//implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.2.4")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")

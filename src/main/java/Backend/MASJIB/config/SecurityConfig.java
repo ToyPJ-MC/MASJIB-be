@@ -66,8 +66,9 @@ public class SecurityConfig {
                     //.requestMatchers("/api/review/**").hasAnyAuthority("ROLE_USER")
                     .requestMatchers("/api/review/**","/images/**","/swagger-ui/**","/v3/api-docs/**","api/shop/**","/swagger-resources/**","/webjars/**","/configuration/**","/v3/**","/v2/**").permitAll()
                     .requestMatchers("/api/oauth/login/**").permitAll()
-                    .requestMatchers("/docs/index.html").permitAll()
+                    .requestMatchers("/api/**").permitAll()
                     .requestMatchers("/api/upload/**").permitAll()
+                    .requestMatchers("/docs/index.html").permitAll()
                     .anyRequest().authenticated()
             ); // 인증
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // jwtFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다.
