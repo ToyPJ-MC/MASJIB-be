@@ -39,6 +39,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             response.addHeader("Authorization","Bearer "+refreshToken); // 헤더에 토큰을 넣어줌
             String url = makeRedirectUrl(refreshToken);
+            response.setStatus(HttpServletResponse.SC_OK);
             getRedirectStrategy().sendRedirect(request,response,url); // 리다이렉트
         }catch (RuntimeException e){
             throw e;
