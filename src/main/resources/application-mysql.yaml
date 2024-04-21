@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: ENC(1CedgEdowy3t2qx/5wvfoMgc0a3lIuqZ6IpHHc3RWigxcAr7ahBGZyGktP3EQwSUwwyftKYm4rOdOij68021sQTbS0Sg/vRk2S0K+T6ZHc53WbuzlgEWlP3IxZEZfJgC)
-    #url: jdbc:log4jdbc:mysql://35.216.61.47:3306/masjib?allowPublicKeyRetrieval=true&useSSL=false
+    #url: ENC(1CedgEdowy3t2qx/5wvfoMgc0a3lIuqZ6IpHHc3RWigxcAr7ahBGZyGktP3EQwSUwwyftKYm4rOdOij68021sQTbS0Sg/vRk2S0K+T6ZHc53WbuzlgEWlP3IxZEZfJgC)
+    url: jdbc:log4jdbc:mysql://35.216.61.47:3306/masjib?allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: ENC(5Vnmj7j1jk5JaLkZ2vmf+w==)
-    password: ENC(1GSlOG9a+xo50wBYeXhC5w==)
-    #password: root
+    #password: ENC(1GSlOG9a+xo50wBYeXhC5w==)
+    password: root
     #
 
   jpa:
