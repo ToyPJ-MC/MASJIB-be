@@ -13,7 +13,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
@@ -55,7 +57,6 @@ public class TokenProvider {
     public String createRefreshToken(String email){
         long now = new Date().getTime();
         Date vaildity = new Date(now + validityInMilliseconds*1000*24*30);
-
         String token =Jwts.builder()
                 .issuedAt(new Date())
                 .subject(email)
@@ -136,7 +137,7 @@ public class TokenProvider {
                 .getBody(); //토큰을 파싱해서 claims를 가져온다.
         List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new).collect(Collectors.toList()); //권한을 가져온다.
-        User principal = new User(claims.getSubject(),"",authorities); //principal은 인증된 사용자의 정보를 담고있는 객체
+        User principal = new User(claims.getSubject(),"", authorities); //principal은 인증된 사용자의 정보를 담고있는 객체
         return new UsernamePasswordAuthenticationToken(principal,token,authorities); //토큰, 권한을 담아서 Authentication 객체를 리턴
     }
     public String getEmail(String token){
@@ -146,6 +147,10 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+    }
+
+    public void removeToken(String memberEmail){
+        redisUtil.deleteTokenToRedis(memberEmail);
     }
 
 }
