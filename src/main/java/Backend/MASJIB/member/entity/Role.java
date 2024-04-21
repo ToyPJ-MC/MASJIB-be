@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.stream.Stream;
 
 public enum Role {
-    NONE,ROLE_USER,ROLE_ADMIN;
+    ROLE_GUEST,ROLE_USER,ROLE_ADMIN;
 
     @JsonCreator(mode=JsonCreator.Mode.DELEGATING)
     public static Role fromString(String value) { // String을 Role로 변환
