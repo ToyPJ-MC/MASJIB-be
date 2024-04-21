@@ -27,7 +27,7 @@ public class OauthController {
         return ResponseEntity.ok().header("Set-Cookie",CookieSetAccessTokenValue(dto)).body(dto);
     }
     private String CookieSetAccessTokenValue(ResponseTokenDto dto){
-        return "access-token="+dto.getAccessToken()+"; Path=/; Max-Age="+dto.getAccessTokenExpiresIn()+"; HttpOnly; Secure";
+        return "access-token="+dto.getAccessToken()+"; Path=/; Max-Age="+dto.getAccessTokenExpiresIn()+"; HttpOnly";
     }
 
     @Operation(summary = "로그아웃 기능", description = "로그인 되어있는 계정을 로그아웃 시킨다.")
