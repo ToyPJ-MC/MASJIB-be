@@ -34,7 +34,7 @@ public class SwaggerConfig {
         server.setDescription("기본 서버");
 
         Server server2 = new Server();
-        server2.setUrl("https://api.seonghoon.xyz");
+        server2.setUrl("https://api.sangwon.xyz");
 
         return new OpenAPI()
                 .info(info)
