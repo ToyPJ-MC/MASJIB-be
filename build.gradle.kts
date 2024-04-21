@@ -46,7 +46,7 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-data-redis:3.2.0")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.2.0")
-	implementation("org.springframework.boot:spring-boot-starter-security:3.2.0")
+	implementation("org.springframework.boot:spring-boot-starter-security:3.2.4")
 
 	implementation("org.locationtech.proj4j:proj4j:1.2.2")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")
