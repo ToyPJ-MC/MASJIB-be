@@ -1,5 +1,6 @@
 spring:
   data:
     redis:
-      host: redis_boot #redis_boot, localhost
+      #host: localhost #redis_boot, localhost
+      host: redis_boot
       port: 6379
