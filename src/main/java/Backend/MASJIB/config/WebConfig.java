@@ -27,8 +27,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOriginPatterns("*") //스프링 2.4.0 이상부터 allowCredentials를 사용하려면 allowOrigins에 "*"를 사용할 수 없게됨
                 .allowedHeaders("*")
+                .allowCredentials(true)
                 .allowedMethods("*").maxAge(3600);
     }
     @Override
