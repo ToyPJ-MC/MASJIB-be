@@ -55,7 +55,6 @@ public class JwtFilter extends GenericFilterBean { // 토큰의 인증정보를 
             if (acceeTokenCookie == null) {
                 return null;
             }
-            log.info("토큰 정보 -> "+acceeTokenCookie.getName());
             bearerToken = acceeTokenCookie.getValue();
         }
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){
