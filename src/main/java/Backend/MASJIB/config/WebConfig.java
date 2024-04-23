@@ -38,6 +38,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceHandler("/images/**")
                 .addResourceLocations(uploadPath);
     }
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {   // 기본 컨버터를 유지관리
         converters.removeIf(v->v.getSupportedMediaTypes().contains(MediaType.MULTIPART_FORM_DATA_VALUE));  // 기존 json용 컨버터 제거

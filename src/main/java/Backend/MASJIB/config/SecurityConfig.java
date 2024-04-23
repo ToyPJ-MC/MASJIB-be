@@ -68,6 +68,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/**").permitAll()
                     .requestMatchers("/api/upload/**").permitAll()
                     .requestMatchers("/docs/index.html").permitAll()
+                    .requestMatchers("/api/ping").permitAll()
                     .anyRequest().authenticated()
             ); // 인증
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // jwtFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다.
