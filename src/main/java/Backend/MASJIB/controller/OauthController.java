@@ -3,6 +3,7 @@ package Backend.MASJIB.controller;
 import Backend.MASJIB.jwt.dto.ResponseTokenDto;
 import Backend.MASJIB.jwt.provider.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/oauth")
+@Tag(name = "Oauth Login API")
 public class OauthController {
     private final TokenProvider tokenProvider;
-
     public OauthController( TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
     }

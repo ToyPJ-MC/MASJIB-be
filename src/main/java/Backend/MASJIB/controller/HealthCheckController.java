@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-@Tag(name = "Health Check")
+@Tag(name = "Server Health Check API")
 public class HealthCheckController {
     @GetMapping("/ping")
     @Operation(summary = "서버의 상태를 확인하는 api")
