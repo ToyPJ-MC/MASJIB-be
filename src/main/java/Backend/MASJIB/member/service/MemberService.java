@@ -72,6 +72,13 @@ public class MemberService {
             return true;
         }
     }
+    public String findNickNameByEmail(String email){
+        Optional<Member> getMember = memberRepository.findByEmail(email);
+        getMember.orElseThrow(RuntimeException::new);
+
+        String memberNickName = getMember.get().getNickname();
+        return memberNickName;
+    }
     private boolean isNickNameUique(String nickName){
         return memberRepository.existsByNickname(nickName);
     }

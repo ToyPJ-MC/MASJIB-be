@@ -5,6 +5,7 @@ import Backend.MASJIB.member.dto.ResponseMemberByCreateDto;
 import Backend.MASJIB.member.dto.ResponseMemberbyFindwithReviewDto;
 import Backend.MASJIB.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/members")
 @Slf4j
+@Tag(name="Member API")
 public class MemberController {
 
     private final MemberService memberService;
@@ -43,15 +45,27 @@ public class MemberController {
         }
     }
     @PostMapping("/{nickname}")
-    @Operation(summary = "닉네임 변경 api",description = "닉네임 변경을 통한 권한 변경, 초기가입자의 임시 닉네임을 사용할 경우 권한이 GUEST")
+    @Operation(summary = "닉네임 변경 api",description ="사용하는 닉네임을 변경하는 api")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity setMemberNickName(@PathVariable String nickname){
         try{
             String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
              boolean isNickNameUique= memberService.modifyMemberNickName(memberEmail, nickname);
-            if(isNickNameUique) return ResponseEntity.ok(nickname + " 로 변경 되었습니다.");
+            if(isNickNameUique) return ResponseEntity.ok(nickname + "로 변경 되었습니다.");
             return ResponseEntity.badRequest().body("중복된 닉네임 변경 요청입니다.");
-        }catch (Exception e){
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/info")
+    @Operation(summary = "닉네임 가져오기 api", description = "")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity getMemberInfo(){
+        try{
+            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            String memberNickName = memberService.findNickNameByEmail(memberEmail);
+            return ResponseEntity.ok(memberNickName);
+        }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
