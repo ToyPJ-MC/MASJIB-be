@@ -14,12 +14,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -27,18 +30,21 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Map;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @AutoConfigureRestDocs
 @WebMvcTest(MemberController.class)
 @AutoConfigureMockMvc
@@ -79,6 +85,64 @@ public class MemberControllerTest{
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("멤버의 고유 이메일"),
                                 fieldWithPath("reviews").type(JsonFieldType.ARRAY).description("등록된 리뷰정보와 images")
                         )
+                ));
+    }
+    @Test
+    @DisplayName("멤버의 닉네임을 e-mail를 통해 조회 테스트")
+    void 멤버_닉네임_조회_테스트() throws Exception{
+        given(memberService.findNickNameByEmail(any())).willReturn("@user-9dd33e6");
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/info").with(oauth2Login())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "member/info",
+                        Preprocessors.preprocessResponse(prettyPrint())
+                ));
+    }
+    @Test
+    @DisplayName("멤버의 고유 닉네임 변경을 성공하는 테스트")
+    void 멤버_닉네임_변경_성공_테스트() throws Exception{
+        given(memberService.modifyMemberNickName(any(),any())).willReturn(true);
+        String nickName = "엄마커서랄로가될래요";
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/members/{nickname}",nickName).with(oauth2Login().authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .with(csrf())
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "member/nickname/modify/success",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("nickname").description("변경하고 싶은 닉네임")
+                        ),responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("멤버의 고유 닉네임 변경을 실패하는 테스트")
+    void 멤버_닉네임_변경_실패_테스트() throws Exception{
+        given(memberService.modifyMemberNickName(any(),any())).willReturn(false);
+        String nickName = "엄마커서랄로가될래요";
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/members/{nickname}",nickName).with(oauth2Login().authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "member/nickname/modify/failure",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("nickname").description("변경하고 싶은 닉네임")
+                        ),responseBody()
                 ));
     }
 }

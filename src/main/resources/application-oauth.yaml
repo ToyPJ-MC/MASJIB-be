@@ -5,8 +5,6 @@ spring:
         registration:
           kakao:
             client-id: ENC(uJE6gt1YZoJEi4IgmgMtPMrjXmrZCCgZbr+beKmI/g5VRTV2rGN7HAWFg31ylOfb)
-            redirect_uri: ENC(4UpUi8l531wOhJ6r+1C70UwNHSp1v5zRL4r1BuX42fxZvXb3o0Ed59ssEpvyIQF9jzGpNQZ+enwAdp7bugeHUg==)
-            #redirect_uri: ENC(u+EZLCa92NLb5e98qg0iJr1ZlI4SMQUEwemxaezF+K2UV7Rn8I09mHJOiYW3WpgMhu80ABWjGpA=) #local
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_post # 클라이언트 인증 방식을 POST로 springboot 3.x에서는 기본값이 BASIC이지만 2.x에서는 기본값이 POST이다.
             client-secret: ENC(sAogZHzn/GLqeSt2BVFvK6RQrDDgGVCVDp+2dz3NO5HfP+3SNIA8S4v2IhvHqlXD)
@@ -20,8 +18,29 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect_uri: ENC(4UpUi8l531wOhJ6r+1C70UwNHSp1v5zRL4r1BuX42fxZvXb3o0Ed59ssEpvyIQF9jzGpNQZ+enwAdp7bugeHUg==)
 app:
   oauth-redirect-uri: http://localhost:3000/oauth2/redirect
-
-
-  #
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect_uri: ENC(u+EZLCa92NLb5e98qg0iJr1ZlI4SMQUEwemxaezF+K2UV7Rn8I09mHJOiYW3WpgMhu80ABWjGpA=) #local
+app:
+  oauth-redirect-uri: http://localhost:3000/oauth2/redirect

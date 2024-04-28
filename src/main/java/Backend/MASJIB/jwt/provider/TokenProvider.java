@@ -65,7 +65,6 @@ public class TokenProvider {
                 .claim(AUTHORITIES_KEY, Role.ROLE_USER)
                 .signWith(generalKey())
                 .compact();
-        System.out.println(token);
         redisUtil.setTokenToRedis(email+"_refreshToken",token,validityInMilliseconds*1000*24*30);
         return token;
     }

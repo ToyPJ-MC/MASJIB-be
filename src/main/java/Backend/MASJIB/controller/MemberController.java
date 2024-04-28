@@ -51,8 +51,8 @@ public class MemberController {
         try{
             String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
              boolean isNickNameUique= memberService.modifyMemberNickName(memberEmail, nickname);
-            if(isNickNameUique) return ResponseEntity.ok(nickname + "로 변경 되었습니다.");
-            return ResponseEntity.badRequest().body("중복된 닉네임 변경 요청입니다.");
+            if(isNickNameUique) return ResponseEntity.ok("\""+nickname + "\"로 변경 되었습니다.");
+            return ResponseEntity.badRequest().body("중복된 닉네임입니다.");
         }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -69,4 +69,6 @@ public class MemberController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
 }

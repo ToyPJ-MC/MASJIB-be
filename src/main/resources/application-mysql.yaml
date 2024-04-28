@@ -1,13 +1,7 @@
 spring:
   datasource:
-    #url: ENC(1CedgEdowy3t2qx/5wvfoMgc0a3lIuqZ6IpHHc3RWigxcAr7ahBGZyGktP3EQwSUwwyftKYm4rOdOij68021sQTbS0Sg/vRk2S0K+T6ZHc53WbuzlgEWlP3IxZEZfJgC)
-    url: jdbc:log4jdbc:mysql://35.216.61.47:3306/masjib?allowPublicKeyRetrieval=true&useSSL=false
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: ENC(5Vnmj7j1jk5JaLkZ2vmf+w==)
-    #password: ENC(1GSlOG9a+xo50wBYeXhC5w==)
-    password: root
-    #
-
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -19,5 +13,22 @@ spring:
         show_sql: true
         format_sql: true
     open-in-view: false
-
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
+  datasource:
+    url: ENC(jYtCcLJE6DbdgNxZOiWc66XEWNFtjoMX4uHTFyoG/YiWEbPschBhd4bP1OFqw5OujT7SfRhsmfrS4T3vRsW31E5Ser1RPyydsy0D5psCrmzEAg9Uzf1XMwbwjMC1BhvS7GQ72/S3Q/I=)
+    password: ENC(GTebZG6I+7mJj8zO6ABcbA==)
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - local
+  datasource:
+    url: ENC(1CedgEdowy3t2qx/5wvfoMgc0a3lIuqZ6IpHHc3RWigxcAr7ahBGZyGktP3EQwSUwwyftKYm4rOdOij68021sQTbS0Sg/vRk2S0K+T6ZHc53WbuzlgEWlP3IxZEZfJgC)
+    password: ENC(1GSlOG9a+xo50wBYeXhC5w==)
 

@@ -69,6 +69,7 @@ dependencies {
 
 	asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
 
+	testImplementation("com.github.kstyrc:embedded-redis:0.6")
 	testImplementation("org.springframework.batch:spring-batch-test:5.0.3")
 	testImplementation("org.springframework.security:spring-security-test:6.2.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
