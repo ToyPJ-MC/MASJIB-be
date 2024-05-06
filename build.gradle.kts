@@ -62,14 +62,13 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testAnnotationProcessor("org.projectlombok:lombok")
 
-	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0")
+	testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc:3.0.1")
 	testImplementation("org.mockito:mockito-core:5.7.0")
 	//testImplementation("org.springframework.restdocs:spring-restdocs-webtestclient")
 	testImplementation("io.kotest:kotest-runner-junit5:4.6.2")
 
-	asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0")
+	asciidoctor("org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.1")
 
-	testImplementation("com.github.kstyrc:embedded-redis:0.6")
 	testImplementation("org.springframework.batch:spring-batch-test:5.0.3")
 	testImplementation("org.springframework.security:spring-security-test:6.2.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -124,4 +123,7 @@ tasks.named<Test>("test") {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("jasypt.encryptor.password", System.getProperty("jasypt.encryptor.password"))
+}
+tasks.withType<JavaCompile> {
+	options.compilerArgs.add("-Xlint:unchecked")
 }

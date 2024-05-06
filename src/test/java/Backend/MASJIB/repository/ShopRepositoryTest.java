@@ -126,20 +126,30 @@ public class ShopRepositoryTest {
         logger.info("result : "+result);
     }
     @Test
-    @DisplayName("Search For Shop Within a 1km Radius Based On Your Location Test")
+    @DisplayName("Search For Shop Within a 1km Radius Test")
     void 반경_1km내_음식점_조회_테스트(){
-        Optional<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY("경남 김해시 인제로",12.114001,89.11414);
+        Optional<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY(12.114001,89.11414);
         findShopByAddress.orElseThrow(RuntimeException::new);
     }
     @Test
-    @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Avg Test")
+    @DisplayName("Shop Within a 1km Radius In Order Of Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
-        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating("경남 김해시 인제로",127.030619,37.496568);// 내림차순
+        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating(127.030619,37.496568);// 내림차순
+    }
+    @Test
+    @DisplayName("Shop Within a 1km Radius In Order Of followCount Test")
+    void 반경_1km내_음식점_찜순_조회_테스트(){
+        List<Shop> findShopByFollwCount = shopRepository.findByShopWithinRadiusAndFollowCount(127.030619,37.496568);// 내림차순
+    }
+    @Test
+    @DisplayName("Shop Within a 1km Radius In Order Of reviewCount Test")
+    void 반경_1km내_음식점_리뷰순_조회_테스트(){
+        List<Shop> findShopByReviewCount = shopRepository.findByShopWithinRadiusAndReviewCount(127.030619,37.496568);// 내림차순
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Test")
     void 반경_1km내_음식점_맛_평가_조회_테스트(){
-        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusAndTasteAssess("경남 김해시 인제로",12.114001,89.11414); //내림차순
+        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusAndTasteAssess(12.114001,89.11414); //내림차순
     }
     @Test
     @DisplayName("View Photos Included In a Shop Test")

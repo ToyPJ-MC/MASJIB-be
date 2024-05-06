@@ -12,8 +12,6 @@ import org.springframework.context.annotation.Description;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FindByShopByRadiusToSortDto {
-    @NotBlank(message = "주소를 입력해주세요 ex 서울특별시 강남구 역삼동")
-    private String address;
     @NotBlank(message = "현재 x좌표를 입력해주세요")
     private double x;
     @NotBlank(message = "현재 y좌표를 입력해주세요")

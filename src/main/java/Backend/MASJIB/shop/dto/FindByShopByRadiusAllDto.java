@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class FindByShopByRadiusAllDto {
-    private String address;
     private Double x;
     private Double y;
 }

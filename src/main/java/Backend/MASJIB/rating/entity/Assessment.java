@@ -17,11 +17,11 @@ public class Assessment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long goodTaste;
+    private long goodTaste; //맛
     private long badTaste;
-    private long goodHygiene;
+    private long goodHygiene; //위생
     private long badHygiene;
-    private long kindness;
+    private long kindness; //친절함
     private long unkindness;
     @JsonIgnore
     public static Assessment set(){

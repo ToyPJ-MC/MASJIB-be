@@ -16,17 +16,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseShopByRadiusDto {
+    private long shopId;
     private String name;
     private String address;
     private double x;
     private double y;
     private String kind;
     private String image;
-    private String recentReview;
-    private long reviewCount;
-    private long followCount;
     private Double totalRating;
-    private long shopId;
+    private long followCount;
+    private long reviewCount;
+    private String recentReview;
 
     public static ResponseShopByRadiusDto set(Shop shop, String review, String image){
         ResponseShopByRadiusDto dto = new ResponseShopByRadiusDto();
