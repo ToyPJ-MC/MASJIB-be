@@ -51,7 +51,7 @@ public class ShopService {
         return ResponseShopByCreateDto.set(createShop);
     }
     public List<ResponseShopByAllDto> getShopByRadiusAll(FindByShopByRadiusAllDto dto){
-        List<Shop> findShop = shopRepository.findByShopWhtinRadiusAll(dto.getAddress(),dto.getX(),dto.getY());
+        List<Shop> findShop = shopRepository.findByShopWhtinRadiusAll(dto.getX(),dto.getY());
         List<ResponseShopByAllDto> dtos = new ArrayList<>();
         for(Shop shop : findShop){
              Image image = imageRepository.findByImageWithShopId(shop.getId());
@@ -64,11 +64,10 @@ public class ShopService {
     public JSONArray getShopBySortWithPaging(String sort, FindByShopByRadiusToSortDto dto){
         List<Shop> findShop;
         if(sort.equals("rating")){
-             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getAddress(),dto.getX(),dto.getY());
+             findShop= shopRepository.sortByShopWithinRadiusWithRating(dto.getX(),dto.getY());
         }
-        else{
-            findShop = shopRepository.FindByShopWithinRadiusAndSort(dto.getAddress(),dto.getX(),dto.getY(),sort);
-        }
+        else if(sort.equals("review")) findShop = shopRepository.findByShopWithinRadiusAndReviewCount(dto.getX(),dto.getY());
+        else findShop = shopRepository.findByShopWithinRadiusAndFollowCount(dto.getX(),dto.getY());
         Map<String,ResponseShopByRadiusDto> shopList = setResponseShop(findShop, dto.getPage());
 
         JSONArray jsonArray = new JSONArray();
@@ -98,7 +97,6 @@ public class ShopService {
                        map.put(String.valueOf(i+1),dto);
                    }
                    else{
-
                        ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),review.getImages().get(0).getPath());
                        map.put(String.valueOf(i+1),dto);
                    }
