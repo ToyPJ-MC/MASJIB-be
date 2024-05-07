@@ -16,6 +16,6 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 
     Optional<Review> findByShopAndMember (Shop shop, Member member);
 
-    @Query("select r from Review r where size(r.images)>0 and r.shop.id = :id order by r.createTime asc, r.id asc limit 1")
+    @Query("select r from Review r where size(r.images)>0 and r.shop.id = :id order by r.createTime desc, r.id asc limit 1")
     Review findReviewByImageNotNUll(@Param("id") long id);
 }

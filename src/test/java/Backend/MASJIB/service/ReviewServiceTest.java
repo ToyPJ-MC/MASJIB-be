@@ -35,7 +35,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ReviewServiceTest {
-    @InjectMocks
+   /* @InjectMocks
     private ReviewService reviewService;
     @Autowired
     private MemberRepository memberRepository;
@@ -54,7 +54,7 @@ public class ReviewServiceTest {
                 .reviews(new ArrayList<>())
                 .build();
         memberRepository.save(member);
-    }
+    }*/
 
     /*@Test
     @DisplayName("Transfer image segmentation Test")

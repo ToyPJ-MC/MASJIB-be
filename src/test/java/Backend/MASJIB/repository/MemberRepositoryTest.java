@@ -12,10 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -25,6 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")
 public class MemberRepositoryTest {
 
     @Autowired
@@ -35,7 +34,7 @@ public class MemberRepositoryTest {
         Member member = Member
                 .builder()
                 .name("지우")
-                .nickname("포켓몬 마스터")
+                .nickname("@user-a1da23")
                 .email("test@test.com")
                 .createTime(LocalDateTime.now().withNano(0))
                 .shops(new ArrayList<>())

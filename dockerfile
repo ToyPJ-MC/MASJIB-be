@@ -7,4 +7,4 @@ ENV JAVA_OPTS=$JAVA_OPTS
 COPY build/libs/MASJIB-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT exec java $JAVA_OPTS -jar -Dspring.profiles.active=dev -Djava.net.preferIPv4Stack=true app.jar

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 services:
   backend:
     image: backend:latest
@@ -7,12 +7,49 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:log4jdbc:mysql://local_mysql:3306/masjib?useSSL=false&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: "1257"
+      SPRING_DATASOURCE_PASSWORD: root
       JASYPT_ENCRYPTOR_PASSWORD: moon
+      SPRING_REDIS_HOST: redis_boot
+      SPRING_REDIS_PORT: 6379
     restart: always
     networks:
       - masjib-network
-
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # host.docker.internal를 -> localhost에서도 접속하기 위해 사용
 networks:
   masjib-network:  # 기존에 생성된 네트워크와 동일한 이름 사용
     external: true  # 외부 네트워크로 선언
+#version: '3.3'
+#services:
+#  mysql:
+#    image: mysql:5.7
+#    container_name: masjib-mysql
+#    platform: linux/amd64
+#    volumes:
+#      - ./db/mysql/data:/var/lib/mysql
+#      - ./db/mysql/init:/docker-entrypoint-initdb.d
+#    environment:
+#      MYSQL_DATABASE: masjib
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_PASSWORD: 1257
+#      MYSQL_ROOT_HOST: '%'
+#      TZ: Asia/Seoul
+#    restart: always
+#    ports:
+#      - "3306:3306"
+#  backend:
+#    image: backend:latest
+#    ports:
+#      - "18080:8080"
+#    environment: #환경 설정(database연결 및 profile 지정)
+#      SPRING_DATASOURCE_URL: jdbc:log4jdbc:mysql://mysql:3306/masjib?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: "1257"
+#      JASYPT_ENCRYPTOR_PASSWORD: moon
+#    restart: always
+#    links:
+#      - mysql
+#    depends_on:
+#      - mysql
+
+

@@ -13,33 +13,75 @@ ifndef::snippets[]
 endif::[]
 
 
-== Member API
 
-=== 멤버 등록 API
+= Member API
+
+== 멤버 닉네임 변경 API
+=== 닉네임 변경 성공 시
 ==== Request
-include::{snippets}/member/create/http-request.adoc[]
+include::{snippets}/member/nickname/modify/success/path-parameters.adoc[]
+include::{snippets}/member/nickname/modify/success/http-request.adoc[]
+==== Response
+include::{snippets}/member/nickname/modify/success/http-response.adoc[]
 
-include::{snippets}/member/create/request-fields.adoc[]
+=== 닉네임 중복 시
+==== Request
+닉네임 변경과 동일한 파라미터를 사용한 api 요청
 
 ==== Response
-include::{snippets}/member/create/http-response.adoc[]
+include::{snippets}/member/nickname/modify/failure/http-response.adoc[]
 
-=== 조회 By Id API
+== 멤버 닉네임 가져오기 API
+
+=== 가져오기 성공 시
+
 ==== Request
-include::{snippets}/member/find/http-request.adoc[]
+SecurityContextHolder에 등록된 Authentication 객체의 email를 사용해 조회하기 때문에 별다른 파라미터가 필요하지 않음
+include::{snippets}/member/info/http-request.adoc[]
 
-==== ResponseMemberDTO
-include::{snippets}/member/find/response-body.adoc[]
+==== Response
+include::{snippets}/member/info/http-response.adoc[]
 
-== Review API
-
-=== 리뷰 등록 API
-==== Request
+= Review API
+== 리뷰 등록 API
+=== Request
 include::{snippets}/review/create/http-request.adoc[]
-content-type : mutipart/form-data 설정
+- content-type : mutipart/form-data 설정
 
 include::{snippets}/review/create/request-fields.adoc[]
-리뷰 등록 시 사진은 필수값이 아님
+- 리뷰 등록 시 사진은 필수값이 아닙니다.
+
+=== Response
+include::{snippets}/review/create/response-body.adoc[]
+
+= Shop API
+== 음식점 조회 API
+=== 반경 1km 내 정렬 조회 API
+==== Request
+
+include::{snippets}/shop/radius/sort/http-request.adoc[]
+
+==== 정렬 기준을 입력합니다.(내림차순)
+
+include::{snippets}/shop/radius/sort/query-parameters.adoc[]
+
+- rating (별점 기준)
+
+- review (리뷰 갯수 순)
+
+- follow (유저 찜 순)
+
+
+include::{snippets}/shop/radius/sort/request-fields.adoc[]
 
 ==== Response
-include::{snippets}/review/create/http-response.adoc[]
+include::{snippets}/shop/radius/sort/response-body.adoc[]
+
+=== 반경 1km 내 전체 조회 API
+==== Request
+
+include::{snippets}/shop/radius/all/http-request.adoc[]
+
+==== Response
+
+include::{snippets}/shop/radius/all/http-response.adoc[]

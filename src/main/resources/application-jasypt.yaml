@@ -1,4 +1,4 @@
-asypt:
+jasypt:
   encryptor:
     bean: jasyptStringEncryptor
     passoword: ${jJASYPT_PASSWORD}

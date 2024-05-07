@@ -1,9 +1,11 @@
 package Backend.MASJIB.controller;
 
+import Backend.MASJIB.jwt.provider.TokenProvider;
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.entity.Member;
 import Backend.MASJIB.member.repository.MemberRepository;
 import Backend.MASJIB.review.dto.CreateReviewDto;
+import Backend.MASJIB.review.dto.ResponseReviewByCreateDto;
 import Backend.MASJIB.review.service.ReviewService;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
@@ -26,8 +28,10 @@ import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -45,13 +49,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.restdocs.snippet.Attributes.key;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 
 @AutoConfigureRestDocs
 @WebMvcTest(ReviewController.class)
+@ExtendWith(SpringExtension.class)
 public class ReviewControllerTest {
 
     @Autowired
@@ -60,15 +69,20 @@ public class ReviewControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private ReviewService reviewService;
+    @MockBean
+    private TokenProvider tokenProvider;
 
     @Test
     @DisplayName("Review Create by Review Controller Using CreateReviewDto API")
+    @WithMockUser(roles = "USER")
     void 리뷰_컨트롤러_생성_테스트()throws Exception{
+        given(reviewService.createReview(any())).willReturn(new ResponseReviewByCreateDto(1L,"음식이 맛있습니다.",1,1,3.5,"goodTaste","goodHygiene","kindness", LocalDateTime.now(),new ArrayList<>()));
+
         String content = objectMapper.writeValueAsString(new CreateReviewDto("음식이 맛있습니다.",1,1,3.5,"goodTaste","goodHygiene","kindness",new ArrayList<>()));
         MockMultipartFile notice = new MockMultipartFile("reviewDto", "reviewDto", "multipart/form-data", content.getBytes(StandardCharsets.UTF_8));
 
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/review")
-                        .accept(MediaType.MULTIPART_FORM_DATA_VALUE)
+        MockMultipartHttpServletRequestBuilder mockMultipartHttpServletRequestBuilder = MockMvcRequestBuilders.multipart("/api/review");
+        mockMvc.perform(mockMultipartHttpServletRequestBuilder.file(notice).with(oauth2Login()) .with(csrf())// with(csrf())를 추가해야 csrf 토큰을 넣어준다
                         .characterEncoding("UTF-8")
                         .content(content)
                         .param("revieDto",notice.getBytes().toString())
@@ -93,4 +107,15 @@ public class ReviewControllerTest {
                 );
 
     }
+    /*responseFields(
+            fieldWithPath("id").type(JsonFieldType.NUMBER).description("리뷰의 고유 번호"),
+    fieldWithPath("comment").type(JsonFieldType.STRING).description("리뷰 내용"),
+    fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("멤버의 고유 번호"),
+    fieldWithPath("shopId").type(JsonFieldType.NUMBER).description("가게의 고유 번호"),
+    fieldWithPath("rating").type(JsonFieldType.NUMBER).description("평점"),
+    fieldWithPath("taste").type(JsonFieldType.STRING).description("맛"),
+    fieldWithPath("hygiene").type(JsonFieldType.STRING).description("위생"),
+    fieldWithPath("kindness").type(JsonFieldType.STRING).description("친절함"),
+    fieldWithPath("paths").type(JsonFieldType.ARRAY).description("사진")
+                                )*/
 }

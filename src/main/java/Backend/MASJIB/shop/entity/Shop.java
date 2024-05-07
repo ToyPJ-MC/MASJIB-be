@@ -31,11 +31,11 @@ public class Shop {
     private long reviewCount;
     private long followCount;
 
-    private String kind;
+    private String kind; //업종 명 ex 한식, 중식 ...
 
     @OneToOne
-    private Rating rating;
+    private Rating rating; //가게 평점
     @OneToOne
-    private Assessment assessment;
+    private Assessment assessment; //가게 평가(맛, 위생, 친절함)
 
 }

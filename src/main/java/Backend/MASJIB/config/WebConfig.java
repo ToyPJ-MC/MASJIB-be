@@ -16,7 +16,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebConfiguration implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${uploadPath}")
     private String uploadPath;
@@ -27,8 +27,9 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
+                .allowedOriginPatterns("*") //스프링 2.4.0 이상부터 allowCredentials를 사용하려면 allowOrigins에 "*"를 사용할 수 없게됨
                 .allowedHeaders("*")
+                .allowCredentials(true)
                 .allowedMethods("*").maxAge(3600);
     }
     @Override
@@ -37,6 +38,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .addResourceHandler("/images/**")
                 .addResourceLocations(uploadPath);
     }
+
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {   // 기본 컨버터를 유지관리
         converters.removeIf(v->v.getSupportedMediaTypes().contains(MediaType.MULTIPART_FORM_DATA_VALUE));  // 기존 json용 컨버터 제거
