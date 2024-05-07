@@ -22,8 +22,6 @@ public class CreateReviewDto {
     @NotNull
     private String comment;
     @NotNull
-    private long memberId;
-    @NotNull
     private long shopId;
     @NotNull
     private double rating;
