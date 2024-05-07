@@ -9,6 +9,7 @@ import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.review.dto.CreateReviewDto;
 import Backend.MASJIB.review.dto.ResponseReviewByCreateDto;
+import Backend.MASJIB.review.dto.ReviewListDto;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.entity.Shop;
@@ -50,9 +51,29 @@ public class ReviewService {
         this.shopRepository = shopRepository;
     }
     @Transactional
-    public ResponseReviewByCreateDto createReview(CreateReviewDto dto) {
+    public List<ReviewListDto> getReviews(String email){
+        Optional<Member> findMember = memberRepository.findByEmail(email);
+        findMember.orElseThrow(RuntimeException::new);
 
-        Optional<Member> findMember = memberRepository.findById(dto.getMemberId());
+        List<Review> findReview = reviewRepository.findByReviewWithMember(findMember.get());
+
+        List<ReviewListDto> list = new ArrayList<>();
+
+        for(int i=0;i<findReview.size();i++){
+            Review review = findReview.get(i);
+            List<String> path = new ArrayList<>();
+            for(int j=0;j<review.getImages().size();j++){
+                path.add(review.getImages().get(j).getPath());
+            }
+            ReviewListDto reviewListDto = ReviewListDto.set(review,path);
+            list.add(reviewListDto);
+        }
+        return list;
+    }
+    @Transactional
+    public ResponseReviewByCreateDto createReview(CreateReviewDto dto,String email) {
+
+        Optional<Member> findMember = memberRepository.findByEmail(email);
         findMember.orElseThrow(RuntimeException::new);
 
         Optional<Shop> findShop = shopRepository.findById(dto.getShopId());
