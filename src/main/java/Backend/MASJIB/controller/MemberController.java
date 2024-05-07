@@ -1,9 +1,11 @@
 package Backend.MASJIB.controller;
 
+import Backend.MASJIB.exception.LoginRequiredException;
 import Backend.MASJIB.member.dto.CreateMemberDto;
 import Backend.MASJIB.member.dto.ResponseMemberByCreateDto;
 import Backend.MASJIB.member.dto.ResponseMemberbyFindwithReviewDto;
 import Backend.MASJIB.member.service.MemberService;
+import Backend.MASJIB.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,14 +34,9 @@ public class MemberController {
     @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_USER')") //인증된 사용자만 해당 메소드 호출 가능
     public ResponseEntity getMemberById(@PathVariable Long id){
         try{
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            if(username == null){
-                return ResponseEntity.badRequest().body("로그인이 필요합니다.");
-            }
-            else{
-                ResponseMemberbyFindwithReviewDto member=memberService.findMemberById(id);
-                return ResponseEntity.ok().body(member);
-            }
+            String memberEmail = SecurityUtil.getCurrentMemberEmail().orElseThrow(LoginRequiredException::new);
+            ResponseMemberbyFindwithReviewDto member=memberService.findMemberById(id);
+            return ResponseEntity.ok().body(member);
         }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -49,7 +46,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity setMemberNickName(@PathVariable String nickname){
         try{
-            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            String memberEmail = SecurityUtil.getCurrentMemberEmail().orElseThrow(LoginRequiredException::new);
              boolean isNickNameUique= memberService.modifyMemberNickName(memberEmail, nickname);
             if(isNickNameUique) return ResponseEntity.ok("\""+nickname + "\"로 변경 되었습니다.");
             return ResponseEntity.badRequest().body("중복된 닉네임입니다.");
@@ -62,7 +59,7 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity getMemberInfo(){
         try{
-            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            String memberEmail = SecurityUtil.getCurrentMemberEmail().orElseThrow(LoginRequiredException::new);
             String memberNickName = memberService.findNickNameByEmail(memberEmail);
             return ResponseEntity.ok(memberNickName);
         }catch (RuntimeException e){

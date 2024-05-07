@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.simple.JSONArray;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class ShopController {
 
     @PostMapping("/shop")
     @Operation(summary = "맛집 등록")
+    @PreAuthorize("isAuthenticated() and hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity createShop(CreateShopDto dto){
         try{
             ResponseShopByCreateDto shop =shopService.createShop(dto);
