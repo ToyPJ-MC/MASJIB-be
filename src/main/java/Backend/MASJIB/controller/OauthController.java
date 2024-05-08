@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/oauth")
-@Tag(name = "Oauth Login API")
+@Tag(name = "Oauth Login API",description = "로그인 및 로그아웃 API")
 public class OauthController {
     private final TokenProvider tokenProvider;
     public OauthController( TokenProvider tokenProvider) {
