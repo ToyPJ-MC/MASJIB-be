@@ -22,7 +22,7 @@ public class Assessment {
     private long goodHygiene; //위생
     private long badHygiene;
     private long kindness; //친절함
-    private long unkindness;
+    private long unKindness;
     @JsonIgnore
     public static Assessment set(){
         return Assessment.builder()
@@ -31,7 +31,7 @@ public class Assessment {
                 .goodHygiene(0L)
                 .badHygiene(0L)
                 .kindness(0L)
-                .unkindness(0L)
+                .unKindness(0L)
                 .build();
     }
 }

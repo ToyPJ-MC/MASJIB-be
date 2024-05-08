@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReviewListDto {
 
-    private long id;
+    private long reviewId;
     private String comment;
     private long shopId;
     private String shopName;
@@ -33,7 +33,7 @@ public class ReviewListDto {
 
     public static ReviewListDto set(Review review, List<String> path){
         ReviewListDto dto = new ReviewListDto();
-        dto.setId(review.getId());
+        dto.setReviewId(review.getId());
         dto.setComment(review.getComment());
         dto.setRating(review.getRating());
 

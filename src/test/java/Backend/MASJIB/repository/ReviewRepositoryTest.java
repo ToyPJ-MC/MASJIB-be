@@ -227,7 +227,7 @@ public class ReviewRepositoryTest {
         else if(taste.equals("badTaste")) shop.getAssessment().setBadTaste(shop.getAssessment().getBadTaste()+1);
         if(hygiene.equals("goodHygiene")) shop.getAssessment().setGoodHygiene(shop.getAssessment().getGoodHygiene()+1);
         else if(hygiene.equals("badHygiene")) shop.getAssessment().setBadHygiene(shop.getAssessment().getBadHygiene()+1);
-        if(kindness.equals("unkindness")) shop.getAssessment().setUnkindness(shop.getAssessment().getUnkindness()+1);
+        if(kindness.equals("unKindness")) shop.getAssessment().setUnKindness(shop.getAssessment().getUnKindness()+1);
         else if(kindness.equals("kindness")) shop.getAssessment().setKindness(shop.getAssessment().getKindness()+1);
     }
 

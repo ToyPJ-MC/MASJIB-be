@@ -1,32 +1,19 @@
 package Backend.MASJIB.controller;
 
-import Backend.MASJIB.exception.LoginRequiredException;
 import Backend.MASJIB.review.dto.CreateReviewDto;
 import Backend.MASJIB.review.dto.ResponseReviewByCreateDto;
 import Backend.MASJIB.review.dto.ReviewListDto;
-import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.review.service.ReviewService;
-import Backend.MASJIB.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -43,7 +30,7 @@ public class ReviewController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity createReview(@ModelAttribute CreateReviewDto dto){
         try{
-            String memberEmail = SecurityUtil.getCurrentMemberEmail().orElseThrow(LoginRequiredException::new);
+            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
             ResponseReviewByCreateDto returnDto =reviewService.createReview(dto,memberEmail);
             return ResponseEntity.ok().body(returnDto);
         }catch (Exception e){
@@ -56,7 +43,7 @@ public class ReviewController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity getReviews(){
         try{
-            String memberEmail = SecurityUtil.getCurrentMemberEmail().orElseThrow(LoginRequiredException::new);
+            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
             List<ReviewListDto> reviewList =reviewService.getReviews(memberEmail);
             return ResponseEntity.ok().body(reviewList);
         }catch (Exception e){

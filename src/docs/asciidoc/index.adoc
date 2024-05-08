@@ -44,15 +44,28 @@ include::{snippets}/member/info/http-response.adoc[]
 
 = Review API
 == 리뷰 등록 API
-=== Request
-include::{snippets}/review/create/http-request.adoc[]
-- content-type : mutipart/form-data 설정
-
+=== 리뷰 등록 시
+==== request-field
 include::{snippets}/review/create/request-fields.adoc[]
+- 리뷰 정보를 입력합니다.
 - 리뷰 등록 시 사진은 필수값이 아닙니다.
 
+==== Request
+include::{snippets}/review/create/http-request.adoc[]
+- 해당 내용을 reviewDto에 입력해줘야 합니다.
+- content-type : mutipart/form-data 설정
+
+==== Response
+include::{snippets}/review/create/http-response.adoc[]
+
+== 리뷰 조회 API
+=== Request
+include::{snippets}/review/list/http-request.adoc[]
+- 등록된 사용자의 리뷰를 조회합니다.
+
 === Response
-include::{snippets}/review/create/response-body.adoc[]
+include::{snippets}/review/list/http-response.adoc[]
+- 생성 시간을 기준으로 오름차순합니다.
 
 = Shop API
 == 음식점 조회 API
