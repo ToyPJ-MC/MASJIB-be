@@ -44,18 +44,16 @@ include::{snippets}/member/info/http-response.adoc[]
 
 = Review API
 == 리뷰 등록 API
-=== 리뷰 등록 시
-==== request-field
+=== request-field
 include::{snippets}/review/create/request-fields.adoc[]
 - 리뷰 정보를 입력합니다.
 - 리뷰 등록 시 사진은 필수값이 아닙니다.
 
-==== Request
+=== Request
 include::{snippets}/review/create/http-request.adoc[]
-- 해당 내용을 reviewDto에 입력해줘야 합니다.
 - content-type : mutipart/form-data 설정
 
-==== Response
+=== Response
 include::{snippets}/review/create/http-response.adoc[]
 
 == 리뷰 조회 API

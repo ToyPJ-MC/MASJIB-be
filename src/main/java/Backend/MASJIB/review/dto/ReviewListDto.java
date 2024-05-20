@@ -40,6 +40,7 @@ public class ReviewListDto {
         dto.setShopId(review.getShop().getId());
         dto.setShopName(review.getShop().getName());
 
+        dto.setCreateTime(review.getCreateTime());
         dto.setTaste(review.getTaste());
         dto.setHygiene(review.getHygiene());
         dto.setKindness(review.getKindness());

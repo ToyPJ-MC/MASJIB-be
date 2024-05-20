@@ -13,7 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review,Long> {
-    Optional<Review> findByIdAndMemberId (long id, long memberId);
+    @Query("select r from Review r where r.member = :member and r.id = :id")
+    Optional<Review> findByIdAndMember (@Param("id") long id, @Param("member") Member member);
 
     Optional<Review> findByShopAndMember (Shop shop, Member member);
     @Query("select r from Review r where r.member = :member order by r.createTime asc")
@@ -21,4 +22,7 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 
     @Query("select r from Review r where size(r.images)>0 and r.shop.id = :id order by r.createTime desc, r.id asc limit 1")
     Review findReviewByImageNotNUll(@Param("id") long id);
+
+    @Query("select r from Review r order by :sort desc, r.id asc limit 1")
+    Review findByReview (@Param("sort") String sort);
 }

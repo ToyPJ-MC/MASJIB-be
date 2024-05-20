@@ -44,7 +44,7 @@ public class ShopController {
        }
     }
     @GetMapping("/shop/radius/all")
-    @Operation(summary = "반경 1km 내 맛집 전체 조회", description = "이름 기준으로 내림차순해서 정렬함, page 번호는 1번부터 ~ ")
+    @Operation(summary = "반경 1km 내 맛집 전체 조회", description = "이름 기준으로 내림차순해서 정렬함")
     public ResponseEntity getShopByRadiusAll(FindByShopByRadiusAllDto dto){
         try{
             List<ResponseShopByAllDto> dtos = shopService.getShopByRadiusAll(dto);

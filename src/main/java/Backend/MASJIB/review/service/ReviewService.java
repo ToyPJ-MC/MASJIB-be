@@ -71,6 +71,17 @@ public class ReviewService {
         return list;
     }
     @Transactional
+    public void deleteReviews(List<Integer> ids,String memberEmail){
+        Optional<Member> findMember = memberRepository.findByEmail(memberEmail);
+        for(int id : ids){
+            Optional<Review> findReview = reviewRepository.findByIdAndMember(id, findMember.get());
+            findReview.orElseThrow(RuntimeException::new);
+
+            reviewRepository.delete(findReview.get());
+            findMember.get().getReviews().remove(findReview.get());
+        }
+    }
+    @Transactional
     public ResponseReviewByCreateDto createReview(CreateReviewDto dto,String email) {
 
         Optional<Member> findMember = memberRepository.findByEmail(email);

@@ -27,7 +27,7 @@ public class ReviewController {
 
     @PostMapping(value = "/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,produces = MediaType.APPLICATION_JSON_VALUE) // 사진의 경우
     @Operation(summary = "리뷰 등록 api",description = "리뷰 text, shopId, rating(맛 평점), taste(goodTaste or badTaste), hygiene(goodHygiene or badHygiene), kindness(kindness or unkindness) 입력합니다.")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity createReview(@ModelAttribute CreateReviewDto dto){
         try{
             String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -40,7 +40,7 @@ public class ReviewController {
 
     @GetMapping(value = "/review")
     @Operation(summary = "리뷰 조회 api",description = "사용자의 등록된 리뷰 정보를 조회합니다. 리뷰는 생성시간을 기준으로 오름차순 정렬합니다.")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
     public ResponseEntity getReviews(){
         try{
             String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -48,6 +48,19 @@ public class ReviewController {
             return ResponseEntity.ok().body(reviewList);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/review")
+    @Operation(summary = "리뷰 삭제 api",description = "사용자의 등록된 리뷰를 삭제합니다. 리뷰 id(여러개 or null or 단일)를 넘겨줘야 합니다.")
+    @PreAuthorize("isAuthenticated() and hasAuthority('ROLE_USER')")
+    public ResponseEntity deleteReviews(@RequestParam(required = false) List<Integer> ids){
+        try{
+            String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+            if(ids.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("삭제할 리뷰가 선택되지 않았습니다.");
+            reviewService.deleteReviews(ids, memberEmail);
+            return ResponseEntity.ok("삭제되었습니다.");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
