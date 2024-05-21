@@ -108,7 +108,7 @@ public class ReviewService {
         reviewRepository.save(review);
 
         if(!dto.getFiles().isEmpty()){
-            List<String> paths = createImagesPath(dto.getFiles(),findMember.get().getNickname());
+            List<String> paths = createImagesPath(dto.getFiles(),findMember.get().getEmail());
             for(String path : paths){
                 Image image = Image.builder()
                         .path(path)
@@ -133,7 +133,7 @@ public class ReviewService {
         return ResponseReviewByCreateDto.set(review);
     }
 
-    private List<String> createImagesPath(List<MultipartFile> file,String name){
+    private List<String> createImagesPath(List<MultipartFile> file,String email){
         List<String> paths = new ArrayList<>();
 
         String uploadDir = "images";
@@ -144,7 +144,7 @@ public class ReviewService {
         }
         for(int i=0;i<file.size();i++){
 
-            String outputFileName = name+"-"+file.get(i).getOriginalFilename();
+            String outputFileName = email+"-"+file.get(i).getOriginalFilename();
             Path outputFile = Paths.get(uploadDir, outputFileName);
             paths.add(outputFile.toString());
         }
