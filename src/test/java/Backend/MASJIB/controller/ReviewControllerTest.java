@@ -19,6 +19,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,13 +31,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.snippet.Attributes.key;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+
 @AutoConfigureRestDocs
 @WebMvcTest(ReviewController.class)
 @AutoConfigureMockMvc
@@ -132,5 +137,54 @@ public class ReviewControllerTest {
                         )
                 ));
     }
+    @Test
+    @DisplayName("Delete the user's registerd reivew API")
+    void 멤버의_리뷰_삭제_성공_테스트() throws Exception {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(1);
+        ids.add(2);
+        // deleteReviews 메소드는 void를 반환하므로 doNothing을 사용하여 예외를 던지지 않도록 설정
+        doNothing().when(reviewService).deleteReviews(anyList(),any());
 
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/review").with(oauth2Login().authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .queryParam("ids", "1","2")
+                .with(csrf())
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "review/delete/success",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("ids").description("리뷰 고유 id")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
+    @DisplayName("Delete the user's registerd reivew API")
+    void 멤버의_리뷰_삭제_실패_테스트() throws Exception {
+        // deleteReviews 메소드는 void를 반환하므로 doNothing을 사용하여 예외를 던지지 않도록 설정
+        doNothing().when(reviewService).deleteReviews(anyList(),any());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/review").with(oauth2Login().authorities(new SimpleGrantedAuthority("ROLE_USER")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .queryParam("ids", "")
+                        .with(csrf())
+                ).andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "review/delete/failure",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        queryParameters(
+                                parameterWithName("ids").description("리뷰 고유 id")
+                        ),
+                        responseBody()
+                ));
+    }
 }
