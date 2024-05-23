@@ -36,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -111,7 +112,7 @@ public class ReviewService {
         reviewRepository.save(review);
 
         if(!dto.getFiles().isEmpty()){
-            List<String> paths = createImagesPath(dto.getFiles(),findMember.get().getEmail());
+            List<String> paths = createImagesPath(dto.getFiles(),findShop.get().getId());
             for(String path : paths){
                 Image image = Image.builder()
                         .path(path)
@@ -152,7 +153,9 @@ public class ReviewService {
                                 .size(newWidth, newHeight)
                                 .toFile(originalFile);
                     }
-
+                    if (originalFile.exists()) {
+                        originalFile.delete();
+                    }
                     /*FileOutputStream fileOutputStream = new FileOutputStream(paths.get(i));
                     fileOutputStream.write(dto.getFiles().get(i).getBytes());
                     fileOutputStream.close();*/
@@ -165,7 +168,7 @@ public class ReviewService {
         return ResponseReviewByCreateDto.set(review);
     }
 
-    private List<String> createImagesPath(List<MultipartFile> file,String email){
+    private List<String> createImagesPath(List<MultipartFile> file,long shopId){
         List<String> paths = new ArrayList<>();
 
         String uploadDir = "images";
@@ -175,7 +178,10 @@ public class ReviewService {
             dir.mkdirs();
         }
         for(int i=0;i<file.size();i++){
-            String outputFileName = email+"-"+file.get(i).getOriginalFilename();
+            String random = UUID.randomUUID().toString();
+            random = random.replaceAll("-", "");
+            random = random.substring(0,10);
+            String outputFileName = shopId+"-"+random;
             Path outputFile = Paths.get(uploadDir, outputFileName);
             paths.add(outputFile.toString());
         }
