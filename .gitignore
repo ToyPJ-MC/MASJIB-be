@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ###Rest docs###
-**/src/main/resources/static/docs/
+**/src/main/resources/static/docs/.DS_Store

@@ -15,6 +15,7 @@ import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -121,9 +124,38 @@ public class ReviewService {
             }
             for(int i=0;i<dto.getFiles().size();i++){
                 try {
-                    FileOutputStream fileOutputStream = new FileOutputStream(paths.get(i));
-                    fileOutputStream.write(dto.getFiles().get(i).getBytes());
+                    MultipartFile file = dto.getFiles().get(i);
+                    String originalPath = paths.get(i);
+                    File originalFile = new File(originalPath);
+
+                    // Save the original file
+                    FileOutputStream fileOutputStream = new FileOutputStream(originalPath);
+                    fileOutputStream.write(file.getBytes());
                     fileOutputStream.close();
+
+                    // Resize the image if its dimensions exceed 1000x1000
+                    BufferedImage bufferedImage = ImageIO.read(originalFile);
+                    int width = bufferedImage.getWidth();
+                    int height = bufferedImage.getHeight();
+
+                    if (width > 1000 || height > 1000) {
+                        int newWidth;
+                        int newHeight;
+                        if (width > height) {
+                            newWidth = 1000;
+                            newHeight = (height * 1000) / width;
+                        } else {
+                            newHeight = 1000;
+                            newWidth = (width * 1000) / height;
+                        }
+                        Thumbnails.of(originalFile)
+                                .size(newWidth, newHeight)
+                                .toFile(originalFile);
+                    }
+
+                    /*FileOutputStream fileOutputStream = new FileOutputStream(paths.get(i));
+                    fileOutputStream.write(dto.getFiles().get(i).getBytes());
+                    fileOutputStream.close();*/
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -143,7 +175,6 @@ public class ReviewService {
             dir.mkdirs();
         }
         for(int i=0;i<file.size();i++){
-
             String outputFileName = email+"-"+file.get(i).getOriginalFilename();
             Path outputFile = Paths.get(uploadDir, outputFileName);
             paths.add(outputFile.toString());
