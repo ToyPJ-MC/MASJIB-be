@@ -81,7 +81,9 @@ public class ReviewService {
         for(int id : ids){
             Optional<Review> findReview = reviewRepository.findByIdAndMember(id, findMember.get());
             findReview.orElseThrow(RuntimeException::new);
-
+            Optional<Shop> findShop = shopRepository.findById(findReview.get().getShop().getId());
+            deleteRatingToShop(findShop.get(), findReview.get().getRating());
+            deleteAssessment(findShop.get(),findReview.get().getTaste(),findReview.get().getHygiene(),findReview.get().getKindness());
             reviewRepository.delete(findReview.get());
             findMember.get().getReviews().remove(findReview.get());
         }
@@ -198,6 +200,30 @@ public class ReviewService {
             return "";
         }
         return fileName.substring(dotIndex + 1);
+    }
+    private void deleteRatingToShop(Shop shop, Double rating){
+        if(rating==5.0) shop.getRating().setFive(shop.getRating().getFive()-1);
+        else if(rating==4.5) shop.getRating().setFourHalf(shop.getRating().getFourHalf()-1);
+        else if(rating==4.0) shop.getRating().setFour(shop.getRating().getFour()-1);
+        else if(rating==3.5) shop.getRating().setThreeHalf(shop.getRating().getThreeHalf()-1);
+        else if(rating==3.0) shop.getRating().setThree(shop.getRating().getThree()-1);
+        else if(rating==2.5) shop.getRating().setTwoHalf(shop.getRating().getTwoHalf()-1);
+        else if(rating==2.0) shop.getRating().setTwo(shop.getRating().getTwo()-1);
+        else if(rating==1.5) shop.getRating().setOneHalf(shop.getRating().getOneHalf()-1);
+        else if(rating==1.0) shop.getRating().setOne(shop.getRating().getOne()-1);
+        else if(rating==0.5) shop.getRating().setHalf(shop.getRating().getHalf()-1);
+        else shop.getRating().setZero(shop.getRating().getZero()-1);
+        shop.getRating().setCount(shop.getRating().getCount()-1);
+        shop.setReviewCount(shop.getReviewCount()-1);
+    }
+
+    private void deleteAssessment(Shop shop,String taste,String hygiene,String kindness){
+        if(taste.equals("goodTaste")) shop.getAssessment().setGoodTaste(shop.getAssessment().getGoodTaste()-1);
+        else if(taste.equals("badTaste")) shop.getAssessment().setBadTaste(shop.getAssessment().getBadTaste()-1);
+        if(hygiene.equals("goodHygiene")) shop.getAssessment().setGoodHygiene(shop.getAssessment().getGoodHygiene()-1);
+        else if(hygiene.equals("badHygiene")) shop.getAssessment().setBadHygiene(shop.getAssessment().getBadHygiene()-1);
+        if(kindness.equals("unkindness")) shop.getAssessment().setUnKindness(shop.getAssessment().getUnKindness()-1);
+        else if(kindness.equals("kindness")) shop.getAssessment().setKindness(shop.getAssessment().getKindness()-1);
     }
 
     private void setRatingToShop(Shop shop, Double rating){
