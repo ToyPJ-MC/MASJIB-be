@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -99,7 +100,7 @@ public class ReviewService {
 
         Review review = Review.builder()
                 .comment(dto.getComment())
-                .createTime(LocalDateTime.now().withNano(0))
+                .createTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")).withNano(0))
                 .images(new ArrayList<>())
                 .member(findMember.get())
                 .rating(dto.getRating())
@@ -117,7 +118,7 @@ public class ReviewService {
                 Image image = Image.builder()
                         .path(path)
                         .review(review)
-                        .createTime(LocalDateTime.now())
+                        .createTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                         .shopId(findShop.get().getId())
                         .build();
                 imageRepository.save(image);
