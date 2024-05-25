@@ -128,7 +128,6 @@ public class ReviewService {
                     MultipartFile file = dto.getFiles().get(i);
                     String originalPath = paths.get(i);
                     File originalFile = new File(originalPath);
-
                     // Save the original file
                     FileOutputStream fileOutputStream = new FileOutputStream(originalPath);
                     fileOutputStream.write(file.getBytes());
@@ -151,14 +150,11 @@ public class ReviewService {
                         }
                         Thumbnails.of(originalFile)
                                 .size(newWidth, newHeight)
+                                .outputFormat(getFileExtension(originalPath))
                                 .toFile(originalFile);
                     }
-                    if (originalFile.exists()) {
-                        originalFile.delete();
-                    }
-                    /*FileOutputStream fileOutputStream = new FileOutputStream(paths.get(i));
-                    fileOutputStream.write(dto.getFiles().get(i).getBytes());
-                    fileOutputStream.close();*/
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -178,14 +174,29 @@ public class ReviewService {
             dir.mkdirs();
         }
         for(int i=0;i<file.size();i++){
+            String originalFilename = file.get(i).getOriginalFilename();
+            if (originalFilename == null) continue;
+            String extension = originalFilename.substring(originalFilename.lastIndexOf('.'));
+
             String random = UUID.randomUUID().toString();
             random = random.replaceAll("-", "");
             random = random.substring(0,10);
+
             String outputFileName = shopId+"-"+random;
-            Path outputFile = Paths.get(uploadDir, outputFileName);
-            paths.add(outputFile.toString());
+            Path upload =Paths.get(uploadDir, outputFileName);
+            paths.add(upload.toString()+extension);
         }
         return paths;
+    }
+    private String getFileExtension(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return "";
+        }
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
+            return "";
+        }
+        return fileName.substring(dotIndex + 1);
     }
 
     private void setRatingToShop(Shop shop, Double rating){
