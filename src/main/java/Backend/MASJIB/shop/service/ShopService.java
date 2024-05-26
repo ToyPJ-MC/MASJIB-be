@@ -35,6 +35,13 @@ public class ShopService {
         this.reviewRepository = reviewRepository;
         this.imageRepository = imageRepository;
     }
+    public List<String> getShopImages(long shopId, int page){
+        Optional<Shop> findShop = shopRepository.findById(shopId);
+        findShop.orElseThrow(RuntimeException::new);
+
+        List<Image> findImages = imageRepository.findByAllImageWithShopId(findShop.get().getId());
+        return getImagesPathWithPaging(findImages,page);
+    }
     @Transactional(readOnly = true)
     public JSONArray getShopDetailsWithReviewsOrderBySorting(long shopId, String sortType, String reviewType, int page){
         Optional<Shop> findShop = shopRepository.findById(shopId);
@@ -65,11 +72,28 @@ public class ShopService {
         JSONObject totalPage = new JSONObject();
         totalPage.put("totalPage",totalPage(sortReviews.size()));
         array.add(findShop.get());
-        images.put("shop_images",findImages);
+        images.put("shop_images",getImagesPath(findImages));
         array.add(images);
         array.add(sortReviews);
         array.add(totalPage);
         return array;
+    }
+    private List<String> getImagesPathWithPaging(List<Image> images, int page){
+        List<String> path = new ArrayList<>();
+        for(int i=0;i<images.size();i++){
+            if((page-1)*5<=i && i<page*5){
+                path.add(images.get(i).getPath());
+            }
+        }
+        return path;
+    }
+
+    private List<String> getImagesPath(List<Image> images){
+        List<String> path = new ArrayList<>();
+        for(Image image : images){
+            path.add(image.getPath());
+        }
+        return path;
     }
     private JSONObject getReviewWithImage(List<Review> reviews,int page){
         JSONObject obj = new JSONObject();

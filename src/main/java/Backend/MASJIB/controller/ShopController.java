@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@Tag(name = "Shop API")
+@Tag(name = "Shop API",description = "음식점 API")
 public class ShopController {
     private final ShopService shopService;
 
@@ -33,6 +33,18 @@ public class ShopController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/shop")
+    @Operation(summary = "선택한 음식점의 세부 페이지의 이미지를 추가로 가져옵니다.", description = "페이징 5개씩 ")
+    public ResponseEntity getShopDetails(@RequestParam("shopId") long shopId, @RequestParam int page){
+        try{
+             List<String> imagePath = shopService.getShopImages(shopId, page);
+            return ResponseEntity.ok().body(imagePath);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/shop/{shop_id}")
     @Operation(summary = "선택한 음식점의 세부 페이지를 불러옵니다.", description = "음식점 id와 sortType(Newest, Oldest, HighestRated, LowestRated), reviewType(OnlyPictures,OnlyText,Based) 원하는 페이지 1부터 ~")
     public ResponseEntity getShopDetails(@PathVariable("shop_id") long shopId,@RequestParam String sortType, @RequestParam String reviewType, @RequestParam int page){
