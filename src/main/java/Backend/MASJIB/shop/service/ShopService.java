@@ -9,6 +9,8 @@ import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.dto.*;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,12 +26,82 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ImageRepository imageRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
     @Autowired
     public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository, ImageRepository imageRepository) {
         this.shopRepository = shopRepository;
         this.reviewRepository = reviewRepository;
         this.imageRepository = imageRepository;
     }
+    @Transactional(readOnly = true)
+    public JSONArray getShopDetailsWithReviewsOrderBySorting(long shopId, String sortType, String reviewType, int page){
+        Optional<Shop> findShop = shopRepository.findById(shopId);
+        findShop.orElseThrow(RuntimeException::new);
+        List<Image> findImages = imageRepository.findByImageWithShopIdAndLimitFive(findShop.get().getId());
+        List<Review> findReviews = new ArrayList<>();
+        switch (sortType){
+            case "Newest": findReviews = reviewRepository.findByReviewAndCreateTimeDesc(findShop.get().getId());
+            break;
+            case "Oldest": findReviews = reviewRepository.findByReviewAndCreateTimeAsc(findShop.get().getId());
+            break;
+            case "HighestRated": findReviews = reviewRepository.findByReviewAndRatingDesc(findShop.get().getId());
+            break;
+            case "LowestRated": findReviews = reviewRepository.findByReviewAndRatingAsc(findShop.get().getId());
+            break;
+            default: break;
+        }
+        JSONObject sortReviews = new JSONObject();
+        switch (reviewType){
+            case "OnlyPictures": sortReviews = getReviewWithImage(findReviews,page);
+                break;
+            case "OnlyText": sortReviews = getReviewWithOutImage(findReviews,page);
+            break;
+            default:
+        }
+        JSONArray array = new JSONArray();
+        JSONObject images = new JSONObject();
+        JSONObject totalPage = new JSONObject();
+        totalPage.put("totalPage",totalPage(sortReviews.size()));
+        array.add(findShop.get());
+        images.put("shop_images",findImages);
+        array.add(images);
+        array.add(sortReviews);
+        array.add(totalPage);
+        return array;
+    }
+    private JSONObject getReviewWithImage(List<Review> reviews,int page){
+        JSONObject obj = new JSONObject();
+        for(int i=0;i<reviews.size();i++){
+            if((page-1)*10 <=i&& i<page*10){
+                JSONArray arr = new JSONArray();
+                obj.put("review",reviews.get(i));
+                if(reviews.get(i).getImages() ==null) continue;
+                else{
+                    for(Image image : reviews.get(i).getImages()){
+                        arr.add(image.getPath());
+                    }
+                }
+                obj.put("imagePath",arr);
+            }
+        }
+        return obj;
+    }
+
+    private JSONObject getReviewWithOutImage(List<Review> reviews,int page){
+        JSONObject obj = new JSONObject();
+        for(int i=0;i<reviews.size();i++){
+            if((page-1)*10 <=i&& i<page*10){
+                JSONArray arr = new JSONArray();
+                if(reviews.get(i).getImages() !=null) continue;
+                else obj.put("review",reviews.get(i));
+            }
+        }
+        return obj;
+    }
+
+
     public ResponseShopByCreateDto createShop(CreateShopDto dto){
         if(shopRepository.existsByAddress(dto.getAddress())){
             throw new RuntimeException("이미 등록된 맛집입니다.");
@@ -82,6 +154,7 @@ public class ShopService {
         else if(size%10!=0)return size/10+1;
         else return size/10;
     }
+
     private   Map<String,ResponseShopByRadiusDto> setResponseShop(List<Shop> shops,int size){
         Map<String,ResponseShopByRadiusDto> map = new HashMap<>();
         for(int i=0;i<shops.size();i++){

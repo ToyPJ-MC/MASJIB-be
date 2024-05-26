@@ -33,6 +33,17 @@ public class ShopController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/shop/{shop_id}")
+    @Operation(summary = "선택한 음식점의 세부 페이지를 불러옵니다.", description = "음식점 id와 sortType(Newest, Oldest, HighestRated, LowestRated), reviewType(OnlyPictures,OnlyText,Based) 원하는 페이지 1부터 ~")
+    public ResponseEntity getShopDetails(@PathVariable("shop_id") long shopId,@RequestParam String sortType, @RequestParam String reviewType, @RequestParam int page){
+        try{
+            JSONArray shopDetails = shopService.getShopDetailsWithReviewsOrderBySorting(shopId, sortType, reviewType, page);
+            return ResponseEntity.ok().body(shopDetails);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/shop/radius")
     @Operation(summary = "반경 1km 내 맛집을 선택한 정렬 기준을 사용해 조회합니다.",description = "rating(별점), review(리뷰 갯수 순), follow(찜 순) 내림차순으로 함, page 번호는 1번부터 ~")
     public ResponseEntity getShopByRadius(@RequestParam("sort") String sort,FindByShopByRadiusToSortDto dto){
