@@ -49,34 +49,64 @@ public class ShopService {
         List<Image> findImages = imageRepository.findByImageWithShopIdAndLimitFive(findShop.get().getId());
         List<Review> findReviews = new ArrayList<>();
         switch (sortType){
-            case "Newest": findReviews = reviewRepository.findByReviewAndCreateTimeDesc(findShop.get().getId());
+            case "newest": findReviews = reviewRepository.findByReviewAndCreateTimeDesc(findShop.get().getId());
             break;
-            case "Oldest": findReviews = reviewRepository.findByReviewAndCreateTimeAsc(findShop.get().getId());
+            case "oldest": findReviews = reviewRepository.findByReviewAndCreateTimeAsc(findShop.get().getId());
             break;
-            case "HighestRated": findReviews = reviewRepository.findByReviewAndRatingDesc(findShop.get().getId());
+            case "highestRated": findReviews = reviewRepository.findByReviewAndRatingDesc(findShop.get().getId());
             break;
-            case "LowestRated": findReviews = reviewRepository.findByReviewAndRatingAsc(findShop.get().getId());
+            case "lowestRated": findReviews = reviewRepository.findByReviewAndRatingAsc(findShop.get().getId());
             break;
             default: break;
         }
-        JSONObject sortReviews = new JSONObject();
+        JSONArray sortReviews = new JSONArray();
         switch (reviewType){
-            case "OnlyPictures": sortReviews = getReviewWithImage(findReviews,page);
+            case "onlyPictures": sortReviews = getReviewWithImage(findReviews,page);
                 break;
-            case "OnlyText": sortReviews = getReviewWithOutImage(findReviews,page);
-            break;
-            default:
+            case "onlyText": sortReviews = getReviewWithOutImage(findReviews,page);
+                break;
+            case "based" : sortReviews = getReviewWithDefault(findReviews,page);
+                break;
+            default: break;
         }
         JSONArray array = new JSONArray();
         JSONObject images = new JSONObject();
+
         JSONObject totalPage = new JSONObject();
         totalPage.put("totalPage",totalPage(sortReviews.size()));
+
+        JSONObject totalRating = new JSONObject();
+        totalRating.put("totalRating",getTotalRating(findShop.get().getRating()));
+
         array.add(findShop.get());
         images.put("shop_images",getImagesPath(findImages));
         array.add(images);
         array.add(sortReviews);
         array.add(totalPage);
+        array.add(totalRating);
+
         return array;
+    }
+    private JSONArray getReviewWithDefault(List<Review> reviews, int page){
+        JSONArray arr = new JSONArray();
+        for(int i=0;i<reviews.size();i++){
+            JSONObject obj = new JSONObject();
+            if((page-1)*10 <=i&& i<page*10){
+                JSONArray images = new JSONArray();
+                obj.put("review",reviews.get(i));
+                if(!reviews.get(i).getImages().isEmpty()){
+                    for(Image image : reviews.get(i).getImages()){
+                        images.add(image.getPath());
+                    }
+                    obj.put("imagePath",images);
+                }
+            }
+            arr.add(obj);
+        }
+        return arr;
+    }
+    private Double getTotalRating(Rating rating){
+        return Rating.CalculationRating(rating);
     }
     private List<String> getImagesPathWithPaging(List<Image> images, int page){
         List<String> path = new ArrayList<>();
@@ -95,34 +125,37 @@ public class ShopService {
         }
         return path;
     }
-    private JSONObject getReviewWithImage(List<Review> reviews,int page){
-        JSONObject obj = new JSONObject();
+    private JSONArray getReviewWithImage(List<Review> reviews,int page){
+        JSONArray arr = new JSONArray();
+
         for(int i=0;i<reviews.size();i++){
-            if((page-1)*10 <=i&& i<page*10){
-                JSONArray arr = new JSONArray();
-                obj.put("review",reviews.get(i));
-                if(reviews.get(i).getImages() ==null) continue;
+            JSONObject obj = new JSONObject();
+            if((page-1)*10 <=i && i<page*10){ // 0~9
+                JSONArray images = new JSONArray();
+                if(reviews.get(i).getImages().isEmpty()) continue;
                 else{
+                    obj.put("review",reviews.get(i));
                     for(Image image : reviews.get(i).getImages()){
-                        arr.add(image.getPath());
+                        images.add(image.getPath());
                     }
                 }
-                obj.put("imagePath",arr);
+                obj.put("imagePath",images);
+                arr.add(obj);
             }
         }
-        return obj;
+        return arr;
     }
 
-    private JSONObject getReviewWithOutImage(List<Review> reviews,int page){
-        JSONObject obj = new JSONObject();
+    private JSONArray getReviewWithOutImage(List<Review> reviews,int page){
+        JSONArray arr =new JSONArray();
         for(int i=0;i<reviews.size();i++){
+            JSONObject obj = new JSONObject();
             if((page-1)*10 <=i&& i<page*10){
-                JSONArray arr = new JSONArray();
-                if(reviews.get(i).getImages() !=null) continue;
-                else obj.put("review",reviews.get(i));
+                if(reviews.get(i).getImages().isEmpty()) obj.put("review",reviews.get(i));
             }
+            arr.add(obj);
         }
-        return obj;
+        return arr;
     }
 
 

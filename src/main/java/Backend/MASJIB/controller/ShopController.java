@@ -46,7 +46,7 @@ public class ShopController {
     }
 
     @GetMapping("/shop/{shop_id}")
-    @Operation(summary = "선택한 음식점의 세부 페이지를 불러옵니다.", description = "음식점 id와 sortType(Newest, Oldest, HighestRated, LowestRated), reviewType(OnlyPictures,OnlyText,Based) 원하는 페이지 1부터 ~")
+    @Operation(summary = "선택한 음식점의 세부 페이지를 불러옵니다.", description = "음식점 id와 sortType(newest, oldest, highestRated, lowestRated), reviewType(onlyPictures,onlyText,based) 원하는 페이지 1부터 ~")
     public ResponseEntity getShopDetails(@PathVariable("shop_id") long shopId,@RequestParam String sortType, @RequestParam String reviewType, @RequestParam int page){
         try{
             JSONArray shopDetails = shopService.getShopDetailsWithReviewsOrderBySorting(shopId, sortType, reviewType, page);
