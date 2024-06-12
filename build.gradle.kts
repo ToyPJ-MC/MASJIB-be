@@ -1,5 +1,3 @@
-import org.asciidoctor.gradle.jvm.AsciidoctorTask
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	java
@@ -49,6 +47,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security:3.2.4")
 
 	implementation("net.coobird:thumbnailator:0.4.20") //images
+	implementation("org.springframework.data:spring-data-elasticsearch:5.1.12")
 
 	implementation("org.locationtech.proj4j:proj4j:1.2.2")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")

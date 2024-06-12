@@ -1,5 +1,6 @@
 package Backend.MASJIB.shop.service;
 
+import Backend.MASJIB.es.repository.ShopDocumentRepository;
 import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.rating.entity.Assessment;
@@ -9,12 +10,18 @@ import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.dto.*;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import io.swagger.v3.oas.annotations.info.Contact;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.annotation.Contract;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.query.SearchTemplateQuery;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +34,6 @@ public class ShopService {
     private final ReviewRepository reviewRepository;
     private final ImageRepository imageRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
     @Autowired
     public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository, ImageRepository imageRepository) {
         this.shopRepository = shopRepository;

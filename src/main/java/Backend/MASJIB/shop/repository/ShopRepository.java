@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Repository
 public interface ShopRepository extends JpaRepository<Shop,Long> {
-    Optional<Shop> findByName (String name);
+    List<Shop> findByName (String name);
     boolean existsByAddress (String address);
 
     @Query("SELECT s FROM Shop s WHERE " +
