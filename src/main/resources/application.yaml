@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: local,dev
+    active: local
   config:
     import:
       - application-redis.yaml
@@ -9,6 +9,7 @@ spring:
       - application-mysql.yaml
       - application-apidocs.yaml
       - application-jwt.yaml
+      - application-es.yaml
 
   main:
     allow-bean-definition-overriding: true
@@ -22,10 +23,13 @@ spring:
       matching-strategy: ant_path_matcher
 logging:
   config: classpath:log/log4j2.xml
-
   http:
     multipart:
       enabled: true
+  level:
+    org.elasticsearch.client: debug
+    tracer: trace
+
 
 uploadPath: file:./images/
 

@@ -1,0 +1,21 @@
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "korean"
+      },
+      "kind": {
+        "type": "text",
+        "analyzer": "korean"
+      },
+      "address": {
+        "type": "text",
+        "analyzer": "korean"
+      }
+    }
+  }
+}

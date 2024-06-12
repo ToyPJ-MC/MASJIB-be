@@ -1,5 +1,6 @@
 package Backend.MASJIB.shop.service;
 
+import Backend.MASJIB.es.repository.ShopDocumentRepository;
 import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.rating.entity.Assessment;
@@ -9,10 +10,18 @@ import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.dto.*;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import io.swagger.v3.oas.annotations.info.Contact;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.annotation.Contract;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.query.SearchTemplateQuery;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +33,137 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ReviewRepository reviewRepository;
     private final ImageRepository imageRepository;
+
     @Autowired
     public ShopService(ShopRepository shopRepository, ReviewRepository reviewRepository, ImageRepository imageRepository) {
         this.shopRepository = shopRepository;
         this.reviewRepository = reviewRepository;
         this.imageRepository = imageRepository;
     }
+    public List<String> getShopImages(long shopId, int page){
+        Optional<Shop> findShop = shopRepository.findById(shopId);
+        findShop.orElseThrow(RuntimeException::new);
+
+        List<Image> findImages = imageRepository.findByAllImageWithShopId(findShop.get().getId());
+        return getImagesPathWithPaging(findImages,page);
+    }
+    @Transactional(readOnly = true)
+    public JSONArray getShopDetailsWithReviewsOrderBySorting(long shopId, String sortType, String reviewType, int page){
+        Optional<Shop> findShop = shopRepository.findById(shopId);
+        findShop.orElseThrow(RuntimeException::new);
+        List<Image> findImages = imageRepository.findByImageWithShopIdAndLimitFive(findShop.get().getId());
+        List<Review> findReviews = new ArrayList<>();
+        switch (sortType){
+            case "newest": findReviews = reviewRepository.findByReviewAndCreateTimeDesc(findShop.get().getId());
+            break;
+            case "oldest": findReviews = reviewRepository.findByReviewAndCreateTimeAsc(findShop.get().getId());
+            break;
+            case "highestRated": findReviews = reviewRepository.findByReviewAndRatingDesc(findShop.get().getId());
+            break;
+            case "lowestRated": findReviews = reviewRepository.findByReviewAndRatingAsc(findShop.get().getId());
+            break;
+            default: break;
+        }
+        JSONArray sortReviews = new JSONArray();
+        switch (reviewType){
+            case "onlyPictures": sortReviews = getReviewWithImage(findReviews,page);
+                break;
+            case "onlyText": sortReviews = getReviewWithOutImage(findReviews,page);
+                break;
+            case "based" : sortReviews = getReviewWithDefault(findReviews,page);
+                break;
+            default: break;
+        }
+        JSONArray array = new JSONArray();
+        JSONObject images = new JSONObject();
+
+        JSONObject totalPage = new JSONObject();
+        totalPage.put("totalPage",totalPage(sortReviews.size()));
+
+        JSONObject totalRating = new JSONObject();
+        totalRating.put("totalRating",getTotalRating(findShop.get().getRating()));
+
+        array.add(findShop.get());
+        images.put("shop_images",getImagesPath(findImages));
+        array.add(images);
+        array.add(sortReviews);
+        array.add(totalPage);
+        array.add(totalRating);
+
+        return array;
+    }
+    private JSONArray getReviewWithDefault(List<Review> reviews, int page){
+        JSONArray arr = new JSONArray();
+        for(int i=0;i<reviews.size();i++){
+            JSONObject obj = new JSONObject();
+            if((page-1)*10 <=i&& i<page*10){
+                JSONArray images = new JSONArray();
+                obj.put("review",reviews.get(i));
+                if(!reviews.get(i).getImages().isEmpty()){
+                    for(Image image : reviews.get(i).getImages()){
+                        images.add(image.getPath());
+                    }
+                    obj.put("imagePath",images);
+                }
+            }
+            arr.add(obj);
+        }
+        return arr;
+    }
+    private Double getTotalRating(Rating rating){
+        return Rating.CalculationRating(rating);
+    }
+    private List<String> getImagesPathWithPaging(List<Image> images, int page){
+        List<String> path = new ArrayList<>();
+        for(int i=0;i<images.size();i++){
+            if((page-1)*5<=i && i<page*5){
+                path.add(images.get(i).getPath());
+            }
+        }
+        return path;
+    }
+
+    private List<String> getImagesPath(List<Image> images){
+        List<String> path = new ArrayList<>();
+        for(Image image : images){
+            path.add(image.getPath());
+        }
+        return path;
+    }
+    private JSONArray getReviewWithImage(List<Review> reviews,int page){
+        JSONArray arr = new JSONArray();
+
+        for(int i=0;i<reviews.size();i++){
+            JSONObject obj = new JSONObject();
+            if((page-1)*10 <=i && i<page*10){ // 0~9
+                JSONArray images = new JSONArray();
+                if(reviews.get(i).getImages().isEmpty()) continue;
+                else{
+                    obj.put("review",reviews.get(i));
+                    for(Image image : reviews.get(i).getImages()){
+                        images.add(image.getPath());
+                    }
+                }
+                obj.put("imagePath",images);
+                arr.add(obj);
+            }
+        }
+        return arr;
+    }
+
+    private JSONArray getReviewWithOutImage(List<Review> reviews,int page){
+        JSONArray arr =new JSONArray();
+        for(int i=0;i<reviews.size();i++){
+            JSONObject obj = new JSONObject();
+            if((page-1)*10 <=i&& i<page*10){
+                if(reviews.get(i).getImages().isEmpty()) obj.put("review",reviews.get(i));
+            }
+            arr.add(obj);
+        }
+        return arr;
+    }
+
+
     public ResponseShopByCreateDto createShop(CreateShopDto dto){
         if(shopRepository.existsByAddress(dto.getAddress())){
             throw new RuntimeException("이미 등록된 맛집입니다.");
@@ -82,6 +216,7 @@ public class ShopService {
         else if(size%10!=0)return size/10+1;
         else return size/10;
     }
+
     private   Map<String,ResponseShopByRadiusDto> setResponseShop(List<Shop> shops,int size){
         Map<String,ResponseShopByRadiusDto> map = new HashMap<>();
         for(int i=0;i<shops.size();i++){

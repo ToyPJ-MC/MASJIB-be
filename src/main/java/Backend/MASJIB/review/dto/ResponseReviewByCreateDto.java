@@ -23,9 +23,7 @@ import java.util.List;
 public class ResponseReviewByCreateDto {
     private long id;
     private String comment;
-    private long member_id;
-    private long shop_id;
-
+    private long shopId;
     private double rating;
 
     private String taste;
@@ -40,8 +38,7 @@ public class ResponseReviewByCreateDto {
         ResponseReviewByCreateDto createDto = new ResponseReviewByCreateDto();
         createDto.setId(review.getId());
         createDto.setComment(review.getComment());
-        createDto.setMember_id(review.getMember().getId());
-        createDto.setShop_id(review.getShop().getId());
+        createDto.setShopId(review.getShop().getId());
         createDto.setRating(review.getRating());
         for(int i=0;i<review.getImages().size();i++){
             createDto.getPaths().add(review.getImages().get(i).getPath());

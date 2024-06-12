@@ -43,7 +43,7 @@ public class Review {
     @JsonIgnore
     private List<Image> images = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="shop_id",nullable = false)
     @JsonIgnore
     private Shop shop;

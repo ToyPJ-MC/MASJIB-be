@@ -1,5 +1,6 @@
 package Backend.MASJIB.upload.xml;
 
+import Backend.MASJIB.es.repository.ShopDocumentRepository;
 import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.rating.repository.AssessmentRepository;
@@ -12,6 +13,7 @@ import org.locationtech.proj4j.CoordinateReferenceSystem;
 import org.locationtech.proj4j.ProjCoordinate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -37,7 +39,6 @@ public class UploadShopXmlService {
         this.assessmentRepository = assessmentRepository;
         this.ratingRepository = ratingRepository;
     }
-
     public void upLoadShopXml(MultipartFile file){
         try{
             InputStream inputStream = file.getInputStream();
@@ -106,7 +107,6 @@ public class UploadShopXmlService {
                         .status(status)
                         .assessment(assessment)
                         .build();
-
                 assessmentRepository.save(assessment);
                 ratingRepository.save(rating);
                 shopRepository.save(shop);

@@ -54,13 +54,13 @@ public class ReviewServiceTest {
                 .reviews(new ArrayList<>())
                 .build();
         memberRepository.save(member);
-    }*/
+    }
 
-    /*@Test
+    @Test
     @DisplayName("Transfer image segmentation Test")
     public void 사진_분할_전송_테스트(){
         try {
-            Path path = Paths.get(""); //"/Users/moon/Downloads/dev-jeans.png"
+            Path path = Paths.get("/Users/moon/Downloads/이력서 사진.jpeg"); //"/Users/moon/Downloads/dev-jeans.png"
 
             double bytes = Files.size(path);
             double megabyte = Math.ceil(bytes/(1024*1024));
@@ -69,7 +69,7 @@ public class ReviewServiceTest {
             while(currentChunk<mb){
                 if(currentChunk==0) System.out.println("진행률 "+currentChunk + "%");
                 else System.out.println("진행률 "+currentChunk*100/mb + "%");
-                //reviewService.chunkUpload(new MockMultipartFile("dev."+path.getFileName(), String.valueOf(path.getFileName()),"image/png",new FileInputStream(path.toFile().getAbsolutePath())),currentChunk,mb);
+                reviewService.chunkUpload(new MockMultipartFile("dev."+path.getFileName(), String.valueOf(path.getFileName()),"image/jpeg",new FileInputStream(path.toFile().getAbsolutePath())),currentChunk,mb);
                 currentChunk++;
             }
            System.out.println("진행률 100%");

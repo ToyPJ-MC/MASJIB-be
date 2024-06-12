@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - local
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      url: localhost:9200
+      username: elastic
+      password: changeme
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+      url: http://35.216.61.47:9200
+      username: elastic
+      password: changeme
+
