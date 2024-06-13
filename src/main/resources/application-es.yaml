@@ -21,7 +21,7 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-      url: http://35.216.61.47:9200
+      url: 35.216.61.47:9200
       username: elastic
       password: changeme
 
