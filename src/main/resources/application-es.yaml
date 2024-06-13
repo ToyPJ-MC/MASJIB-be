@@ -7,8 +7,7 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-      url: localhost
-      host: 9200
+      url: localhost:9200
       username: elastic
       password: changeme
 
@@ -22,8 +21,7 @@ spring:
     elasticsearch:
       repositories:
         enabled: true
-      url: 35.216.61.47
-      host: 9200
+      url: http://35.216.61.47:9200
       username: elastic
       password: changeme
 
