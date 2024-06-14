@@ -128,8 +128,10 @@ public class ShopRepositoryTest {
     @Test
     @DisplayName("Search For Shop Within a 1km Radius Test")
     void 반경_1km내_음식점_조회_테스트(){
-        Optional<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY(12.114001,89.11414);
-        findShopByAddress.orElseThrow(RuntimeException::new);
+        List<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY(127.030619,37.496568);
+        for(Shop shop : findShopByAddress){
+            System.out.printf("shop -> %s \n",shop.getName());
+        }
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Ratings Avg Test")

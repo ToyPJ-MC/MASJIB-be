@@ -20,7 +20,7 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
     @Query("SELECT s FROM Shop s WHERE " +
             "6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) + " +
             "sin(radians(:myY)) * sin(radians(s.y))) < 1")
-    Optional<Shop> findByAddressAndXAndY ( @Param("myX") double myX, @Param("myY") double myY);
+    List<Shop> findByAddressAndXAndY ( @Param("myX") double myX, @Param("myY") double myY);
 
     @Query(value = "select s," +
             "trunc(sum(s.rating.five*5.0+s.rating.fourHalf*4.5+s.rating.four*4.0+s.rating.threeHalf*3.5" +
