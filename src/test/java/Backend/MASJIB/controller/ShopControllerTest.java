@@ -106,9 +106,9 @@ public class ShopControllerTest {
                         )
                 ));
     }
+    @Test
     @DisplayName("Find All Shop Within a 1KM Radius Of The Shop API")
     @WithMockUser
-    @Test
     void 음식점_반경_1km_내_전체_조회()throws Exception {
         List<ResponseShopByAllDto> list = new ArrayList<>();
         ResponseShopByAllDto dto=new ResponseShopByAllDto(1L,"된장찌개 강남점","서울특별시 강남구 테헤란로 117",127.03110424141911,37.49660481702947,"한식","images/i.jpg",3.78);
@@ -145,4 +145,15 @@ public class ShopControllerTest {
                         )
                 ));
     }
+    @Test
+    @DisplayName("Find Shop detailed inquiry API")
+    void 음식점_세부_조회_테스트() throws Exception{
+        JSONArray array = new JSONArray();
+        JSONObject object = new JSONObject();
+    }
+    /*
+    내일 할 일 .
+    test code 작성
+    s3 연동하기
+    */
 }

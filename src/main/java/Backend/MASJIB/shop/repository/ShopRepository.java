@@ -26,9 +26,10 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
             "trunc(sum(s.rating.five*5.0+s.rating.fourHalf*4.5+s.rating.four*4.0+s.rating.threeHalf*3.5" +
             "+s.rating.three*3.0+s.rating.threeHalf*2.5+s.rating.two*2.0+s.rating.oneHalf*1.5+s.rating.one*1.0+" +
             "s.rating.half*0.5)/count(s.rating.count),2) as accessValue from Shop s where 6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) +" +
-            "sin(radians(:myY)) * sin(radians(s.y))) < 1  " +
+            "sin(radians(:myY)) * sin(radians(s.y))) < 1 and s.status = '영업' " +
             "group by s.id order by accessValue desc, s.rating.count desc") //반경 1km 내 별점기준 조회
     List<Shop> sortByShopWithinRadiusWithRating(@Param("myX") double myX, @Param("myY") double myY);
+
 
     @Query("SELECT s, s.assessment.goodTaste as assess FROM Shop s WHERE " +
             "6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) + " +
@@ -45,8 +46,9 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
             "sin(radians(:myY)) * sin(radians(s.y))) < 1  group by s.id order by s.followCount desc, s.name") //반경 1km 내 follow_count 순으로 정렬 조회
     List<Shop> findByShopWithinRadiusAndFollowCount( @Param("myX") double myX, @Param("myY") double myY);
 
-    @Query("select s from Shop s where " +
-            "6371 * acos(cos(radians(:myY)) * cos(radians(s.y)) * cos(radians(s.x) - radians(:myX)) + "
-            + "sin(radians(:myY)) * sin(radians(s.y))) < 1  group by s.id order by s.name")
+    @Query("SELECT s FROM Shop s WHERE " +
+            "6371 * ACOS(COS(RADIANS(:myY)) * COS(RADIANS(s.y)) * COS(RADIANS(s.x) - RADIANS(:myX)) + " +
+            "SIN(RADIANS(:myY)) * SIN(RADIANS(s.y))) < 1 AND s.status = '영업' " +
+            "ORDER BY s.name")
     List<Shop> findByShopWhtinRadiusAll(@Param("myX") double myX, @Param("myY") double myY);//반경 1km 내 전체 조회
 }

@@ -49,8 +49,9 @@ public class Rating {
     }
     @JsonIgnore
     public static Double CalculationRating(Rating rating){
-        Double result = 0.0;
-        result = (rating.getFive()*5.0+rating.getFourHalf()*4.5+rating.getFour()*4.0+rating.getThreeHalf()*3.5
+        if (rating.getCount() == 0) return 0.0;
+
+        Double result = (rating.getFive()*5.0+rating.getFourHalf()*4.5+rating.getFour()*4.0+rating.getThreeHalf()*3.5
                 +rating.getThree()*3.0+rating.getTwoHalf()*2.5+rating.getTwo()*2.0+rating.getOneHalf()*1.5+rating.getOne()*1.0
                 +rating.getHalf()*0.5+rating.getZero()*0.0)/rating.getCount();
 
@@ -59,8 +60,9 @@ public class Rating {
     }
     @JsonIgnore
     public Double getRating(){
-        Double result = 0.0;
-        result = (this.getFive()*5.0+this.getFourHalf()*4.5+this.getFour()*4.0+this.getThreeHalf()*3.5
+        if(this.getCount()==0) return 0.0;
+
+        Double result = (this.getFive()*5.0+this.getFourHalf()*4.5+this.getFour()*4.0+this.getThreeHalf()*3.5
                 +this.getThree()*3.0+this.getTwoHalf()*2.5+this.getTwo()*2.0+this.getOneHalf()*1.5+this.getOne()*1.0
                 +this.getHalf()*0.5+this.getZero()*0.0)/this.getCount();
 

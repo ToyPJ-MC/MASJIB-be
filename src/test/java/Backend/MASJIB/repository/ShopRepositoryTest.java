@@ -86,8 +86,8 @@ public class ShopRepositoryTest {
 
         Shop createShop2 = Shop.builder()
                 .name("김해 공룡피자 본점")
-                .x(12.123010)
-                .y(89.123123)
+                .x(127.03110424141911)
+                .y(37.49660481702947)
                 .reviewCount(0)
                 .status("영업")
                 .address("경남 김해시 인제로 14-3")
@@ -135,6 +135,9 @@ public class ShopRepositoryTest {
     @DisplayName("Shop Within a 1km Radius In Order Of Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
         List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating(127.030619,37.496568);// 내림차순
+        for(Shop shop : findShopByRating){
+            System.out.printf("shop -> %s \n",shop.getName());
+        }
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of followCount Test")

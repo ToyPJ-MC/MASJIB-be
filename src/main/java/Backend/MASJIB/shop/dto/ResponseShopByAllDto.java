@@ -32,8 +32,7 @@ public class ResponseShopByAllDto {
         dto.setName(shop.getName());
         dto.setShopId(shop.getId());
         Double totalRating = Rating.CalculationRating(shop.getRating());
-        if(totalRating.isNaN()) dto.setTotalRating(0.0);
-        else dto.setTotalRating(Double.valueOf(String.format("%.2f", totalRating)));
+        dto.setTotalRating(totalRating);
         dto.setKind(shop.getKind());
         return dto;
     }
