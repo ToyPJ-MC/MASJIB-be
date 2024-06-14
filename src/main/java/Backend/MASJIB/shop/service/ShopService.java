@@ -215,7 +215,7 @@ public class ShopService {
         Map<String,ResponseShopByRadiusDto> map = new HashMap<>();
         for(int i=0;i<shops.size();i++){
            if((size-1)*10 <=i&& i<size*10){
-               Image image = imageRepository.findByRecentImage();
+               Image image = imageRepository.findByRecentImage(shops.get(i).getId());
                if (image ==null) {
                    Review review  = reviewRepository.findByRecentReview(shops.get(i).getId());
                    if(review==null){
@@ -229,7 +229,7 @@ public class ShopService {
                }
                else{
                    Optional<Review> review = reviewRepository.findById(image.getReview().getId());
-                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), review.get().getComment(), review.get().getImages().get(0).getPath());
+                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), review.get().getComment(), image.getPath());
                    map.put(String.valueOf(i+1),dto);
                }
            }

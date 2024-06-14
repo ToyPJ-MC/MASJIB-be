@@ -19,6 +19,6 @@ public interface ImageRepository extends JpaRepository<Image,Long> {
     @Query("select i from Image i where i.shopId = :shopId order by i.createTime desc") //최근 생성 시간 기준으로 리뷰 사진 가져옴
     List<Image> findByAllImageWithShopId(@Param("shopId") long shopId);
 
-    @Query("select i from Image i order by i.createTime desc limit 1")
-    Image findByRecentImage();
+    @Query("select i from Image i where i.shopId = :shopId order by i.createTime desc limit 1")
+    Image findByRecentImage(@Param("shopId") long shopId);
 }
