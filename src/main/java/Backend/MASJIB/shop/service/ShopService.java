@@ -1,6 +1,5 @@
 package Backend.MASJIB.shop.service;
 
-import Backend.MASJIB.es.repository.ShopDocumentRepository;
 import Backend.MASJIB.image.entity.Image;
 import Backend.MASJIB.image.repository.ImageRepository;
 import Backend.MASJIB.rating.entity.Assessment;
@@ -10,18 +9,10 @@ import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.dto.*;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
-import co.elastic.clients.elasticsearch.core.SearchRequest;
-import io.swagger.v3.oas.annotations.info.Contact;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.annotation.Contract;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.core.query.SearchTemplateQuery;
-import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -224,20 +215,22 @@ public class ShopService {
         Map<String,ResponseShopByRadiusDto> map = new HashMap<>();
         for(int i=0;i<shops.size();i++){
            if((size-1)*10 <=i&& i<size*10){
-               Review review = reviewRepository.findReviewByImageNotNUll(shops.get(i).getId());
-               if (review == null) {
-                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), "등록된 리뷰가 없습니다.", "등록된 사진이 없습니다.");
-                   map.put(String.valueOf(i + 1), dto);
-               }
-               else{
-                   if(review.getImages().size()==0){
-                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),"등록된 사진이 없습니다.");
-                       map.put(String.valueOf(i+1),dto);
+               Image image = imageRepository.findByRecentImage();
+               if (image ==null) {
+                   Review review  = reviewRepository.findByRecentReview(shops.get(i).getId());
+                   if(review==null){
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), "등록된 리뷰가 없습니다.", "등록된 사진이 없습니다.");
+                       map.put(String.valueOf(i + 1), dto);
                    }
                    else{
-                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i),review.getComment(),review.getImages().get(0).getPath());
+                       ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), review.getComment(),"등록된 사진이 없습니다.");
                        map.put(String.valueOf(i+1),dto);
                    }
+               }
+               else{
+                   Optional<Review> review = reviewRepository.findById(image.getReview().getId());
+                   ResponseShopByRadiusDto dto = ResponseShopByRadiusDto.set(shops.get(i), review.get().getComment(), review.get().getImages().get(0).getPath());
+                   map.put(String.valueOf(i+1),dto);
                }
            }
         }

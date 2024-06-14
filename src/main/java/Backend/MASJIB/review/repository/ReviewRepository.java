@@ -23,6 +23,8 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("select r from Review r where size(r.images)>0 and r.shop.id = :id order by r.createTime desc, r.id asc limit 1")
     Review findReviewByImageNotNUll(@Param("id") long id);
 
+    @Query("select r from Review r where r.shop.id = :shopid order by r.createTime desc")
+    Review findByRecentReview(@Param("shopid")long id) ;
 
     @Query("select r from Review r order by :sort desc, r.id asc limit 1")
     Review findByReview (@Param("sort") String sort);

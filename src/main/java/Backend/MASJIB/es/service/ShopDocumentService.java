@@ -25,7 +25,7 @@ public class ShopDocumentService {
                     .id(shop.getId())
                     .name(shop.getName())
                     .address(shop.getAddress())
-                    .kind(shop.getAddress())
+                    .kind(shop.getKind())
                     .build();
             shopDocumentRepository.save(addShop);
         }
