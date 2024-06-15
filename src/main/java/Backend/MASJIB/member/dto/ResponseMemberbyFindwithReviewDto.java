@@ -17,7 +17,6 @@ import java.util.Map;
 public class ResponseMemberbyFindwithReviewDto {
 
     private Long id;
-    private String name;
     private String email;
     private String nickName;
     private JSONArray reviews;
@@ -25,7 +24,6 @@ public class ResponseMemberbyFindwithReviewDto {
     public static ResponseMemberbyFindwithReviewDto set(Member member){
         ResponseMemberbyFindwithReviewDto createDto = new ResponseMemberbyFindwithReviewDto();
         createDto.setId(member.getId());
-        createDto.setName(member.getName());
         createDto.setNickName(member.getNickname());
         createDto.setEmail(member.getEmail());
         if(member.getReviews()==null){

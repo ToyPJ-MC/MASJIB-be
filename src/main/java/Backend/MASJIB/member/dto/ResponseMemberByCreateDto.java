@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ResponseMemberByCreateDto {
     private Long id;
-    private String name;
     private String email;
     private String nickName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
@@ -29,7 +28,6 @@ public class ResponseMemberByCreateDto {
         ResponseMemberByCreateDto createDto = new ResponseMemberByCreateDto();
         createDto.setId(member.getId());
         createDto.setCreateTime(member.getCreateTime());
-        createDto.setName(member.getName());
         createDto.setReviews(member.getReviews());
         createDto.setNickName(member.getNickname());
         createDto.setEmail(member.getEmail());
