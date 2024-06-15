@@ -2,7 +2,13 @@ package Backend.MASJIB.controller;
 
 import Backend.MASJIB.config.SecurityConfig;
 import Backend.MASJIB.jwt.provider.TokenProvider;
+import Backend.MASJIB.member.entity.Member;
+import Backend.MASJIB.member.entity.Role;
+import Backend.MASJIB.rating.entity.Assessment;
+import Backend.MASJIB.rating.entity.Rating;
+import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.shop.dto.*;
+import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.service.ShopService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.JSONArray;
@@ -19,8 +25,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.operation.preprocess.Preprocessors;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +36,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +46,9 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
+
 @AutoConfigureRestDocs
 @WebMvcTest(value = ShopController.class,
         excludeFilters =
@@ -146,14 +158,156 @@ public class ShopControllerTest {
                 ));
     }
     @Test
+    @DisplayName("Request to add Shop image API")
+    void 가게_이미지_추가요청_테스트() throws Exception {
+        List<String> imagePath = new ArrayList<>();
+        imagePath.add("images/member_id-UUID.확장자(jpg)");
+        imagePath.add("images/member_id-UUID.확장자(png)");
+        imagePath.add("images/member_id-UUID.확장자(png)");
+        imagePath.add("images/member_id-UUID.확장자(png)");
+        imagePath.add("images/member_id-UUID.확장자(png)");
+        given(shopService.getShopImages(1L,1)).willReturn(imagePath);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/shop/{shopId}/images",1L).with(oauth2Login())
+                .param("page","1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "shop/images",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("shopId").description("음식점 id")
+                        ),
+                        queryParameters(
+                                parameterWithName("page").description("1부터 ~ ")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @Test
     @DisplayName("Find Shop detailed inquiry API")
     void 음식점_세부_조회_테스트() throws Exception{
         JSONArray array = new JSONArray();
-        JSONObject object = new JSONObject();
+        Rating rating = Rating.builder()
+                .id(1L)
+                .count(2)
+                .five(1)
+                .fourHalf(0)
+                .four(1)
+                .threeHalf(0)
+                .three(0)
+                .twoHalf(0)
+                .two(0)
+                .oneHalf(0)
+                .one(0)
+                .half(0)
+                .zero(0)
+                .build();
+
+        Assessment assessment = Assessment.builder()
+                .id(1L)
+                .goodTaste(1)
+                .badTaste(1)
+                .goodHygiene(1)
+                .badHygiene(1)
+                .kindness(2)
+                .unKindness(0)
+                .build();
+
+        Shop shop = Shop.builder()
+                    .id(1L)
+                    .name("된장찌개 강남점")
+                    .x(127.03110424141911)
+                    .y(37.49660481702947)
+                    .address("서울특별시 강남구 테헤란로 117")
+                    .rating(rating)
+                    .assessment(assessment)
+                    .status("한식")
+                    .followCount(0)
+                    .reviewCount(2)
+                    .build();
+        Member member = Member.builder()
+                .id(1L)
+                .shops(new ArrayList<>())
+                .createTime(LocalDateTime.now())
+                .reviews(new ArrayList<>())
+                .role(Role.ROLE_USER)
+                .email("user@user.com")
+                .nickname("서울시정복")
+                .build();
+
+        Review review = Review.builder()
+                .shop(shop)
+                .comment("맛이 좋아요")
+                .createTime(LocalDateTime.now())
+                .taste("goodTaste")
+                .hygiene("goodHygiene")
+                .kindness("kindness")
+                .images(null)
+                .member(member)
+                .rating(5.0)
+                .build();
+        Review review2 = Review.builder()
+                .shop(shop)
+                .comment("맛이 좀 별로에요")
+                .createTime(LocalDateTime.now())
+                .taste("badTaste")
+                .hygiene("badHygiene")
+                .kindness("kindness")
+                .images(null)
+                .member(member)
+                .rating(4.0)
+                .build();
+        JSONArray sortReviews = new JSONArray();
+        JSONObject obj1 = new JSONObject();
+        obj1.put("review",review);
+        obj1.put("imagePath",new ArrayList<>());
+        JSONObject obj2 = new JSONObject();
+        obj2.put("review",review2);
+        obj2.put("imagePath",new ArrayList<>());
+        sortReviews.add(obj1);
+        sortReviews.add(obj2);
+
+        JSONObject totalPage = new JSONObject();
+        totalPage.put("totalPage",1);
+        JSONObject totalRating = new JSONObject();
+        totalRating.put("totalRating",4.5);
+        array.add(shop);
+        JSONObject images = new JSONObject();
+        images.put("shop_images",new ArrayList<>());
+        array.add(images);
+        array.add(sortReviews);
+        array.add(totalPage);
+        array.add(totalRating);
+        given(shopService.getShopDetailsWithReviewsOrderBySorting(1L,"highestRated","based",1)).willReturn(array);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/shop/{shopId}",1L).with(oauth2Login())
+                .param("sortType","highestRated")
+                .param("reviewType","based")
+                .param("page","1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+
+        ).andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andDo(MockMvcRestDocumentation.document(
+                        "shop/detail",
+                        Preprocessors.preprocessRequest(prettyPrint()),
+                        Preprocessors.preprocessResponse(prettyPrint()),
+                        pathParameters(
+                                parameterWithName("shopId").description("음식점 id")
+                        ),
+                        queryParameters(
+                                parameterWithName("sortType").description("정렬 타입"),
+                                parameterWithName("reviewType").description("리뷰 타입"),
+                                parameterWithName("page").description("페이지 번호")
+                        ),
+                        responseBody()
+                ));
     }
-    /*
-    내일 할 일 .
-    test code 작성
-    s3 연동하기
-    */
+
 }

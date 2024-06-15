@@ -34,9 +34,10 @@ public class ShopController {
         }
     }
 
-    @GetMapping("/shop")
+    @GetMapping("/shop/{shopId}/images")
     @Operation(summary = "선택한 음식점의 세부 페이지의 이미지를 추가로 가져옵니다.", description = "페이징 5개씩 ")
-    public ResponseEntity getShopDetails(@RequestParam("shopId") long shopId, @RequestParam int page){
+    public ResponseEntity getShopDetails(@PathVariable("shopId") long shopId,
+                                         @RequestParam(name = "page", defaultValue = "1") int page){
         try{
              List<String> imagePath = shopService.getShopImages(shopId, page);
             return ResponseEntity.ok().body(imagePath);
@@ -45,9 +46,9 @@ public class ShopController {
         }
     }
 
-    @GetMapping("/shop/{shop_id}")
+    @GetMapping("/shop/{shopId}")
     @Operation(summary = "선택한 음식점의 세부 페이지를 불러옵니다.", description = "음식점 id와 sortType(newest, oldest, highestRated, lowestRated), reviewType(onlyPictures,onlyText,based) 원하는 페이지 1부터 ~")
-    public ResponseEntity getShopDetails(@PathVariable("shop_id") long shopId,@RequestParam String sortType, @RequestParam String reviewType, @RequestParam int page){
+    public ResponseEntity getShopDetails(@PathVariable("shopId") long shopId,@RequestParam String sortType, @RequestParam String reviewType, @RequestParam int page){
         try{
             JSONArray shopDetails = shopService.getShopDetailsWithReviewsOrderBySorting(shopId, sortType, reviewType, page);
             return ResponseEntity.ok().body(shopDetails);

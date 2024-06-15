@@ -120,7 +120,7 @@ public class ReviewService {
                 Image image = Image.builder()
                         .path(path)
                         .review(review)
-                        .createTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                        .createTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")).withNano(0))
                         .shopId(findShop.get().getId())
                         .build();
                 imageRepository.save(image);
