@@ -48,7 +48,6 @@ public class MemberService {
            throw new RuntimeException("이미 존재하는 회원입니다.");
         }
         Member createMember = Member.builder()
-                .name(dto.getName())
                 .nickname(dto.getNickname())
                 .email(dto.getEmail())
                 .createTime(LocalDateTime.now())
