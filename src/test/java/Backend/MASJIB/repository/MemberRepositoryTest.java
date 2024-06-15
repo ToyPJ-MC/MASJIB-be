@@ -31,9 +31,9 @@ public class MemberRepositoryTest {
 
     @BeforeEach
     void setUp(){
+        // 멤버 생성
         Member member = Member
                 .builder()
-                .name("지우")
                 .nickname("@user-a1da23")
                 .email("test@test.com")
                 .createTime(LocalDateTime.now().withNano(0))
@@ -43,33 +43,37 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
     }
     @Test
-    @DisplayName("등록된 멤버 조회 테스트")
+    @DisplayName("등록된 멤버를 e-mail로 조회 테스트")
     void 멤버조회테스트(){
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
+        String findEmail = "test@test.com";
+
+        Optional<Member> findMember = memberRepository.findByEmail(findEmail);
         findMember.orElseThrow(RuntimeException::new);
-        assertThat(findMember.get().getName()).isEqualTo(findName);
+
+        assertThat(findMember.get().getEmail()).isEqualTo(findEmail);
     }
 
     @Test
-    @DisplayName("멤버 update 테스트")
+    @DisplayName("멤버의 닉네임 변경 테스트")
     void 멤버_정보_업데이트(){
-        String findName = "지우";
-        String updateName = "웅이";
-        Optional<Member> findMember = memberRepository.findByName(findName);
+        String findEmail = "test@test.com";
+        String changeNickName = "엄마커서 랄로가될래요";
+        Optional<Member> findMember = memberRepository.findByEmail(findEmail);
         findMember.orElseThrow(RuntimeException::new);
-        findMember.get().setName(updateName);
+
+        findMember.get().setNickname(changeNickName);
         memberRepository.save(findMember.get());
-        assertThat(findMember.get().getName()).isEqualTo(updateName);
+        assertThat(findMember.get().getNickname()).isEqualTo(changeNickName);
     }
 
     @Test
     @DisplayName("멤버 삭제 테스트")
     void 멤버_삭제_테스트(){
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
+        String findEmail = "test@test.com";
+        Optional<Member> findMember = memberRepository.findByEmail(findEmail);
         findMember.orElseThrow(RuntimeException::new);
 
         memberRepository.delete(findMember.get());
     }
+
 }

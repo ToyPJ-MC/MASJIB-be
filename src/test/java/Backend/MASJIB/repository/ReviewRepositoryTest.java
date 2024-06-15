@@ -5,7 +5,6 @@ import Backend.MASJIB.rating.entity.Assessment;
 import Backend.MASJIB.rating.entity.Rating;
 import Backend.MASJIB.rating.repository.AssessmentRepository;
 import Backend.MASJIB.rating.repository.RatingRepository;
-import Backend.MASJIB.review.dto.CreateReviewDto;
 import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.member.repository.MemberRepository;
 import Backend.MASJIB.review.repository.ReviewRepository;
@@ -21,27 +20,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
@@ -59,13 +46,14 @@ public class ReviewRepositoryTest {
     private AssessmentRepository assessmentRepository;
     @Autowired
     private RatingRepository ratingRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(ReviewRepositoryTest.class);
 
     @BeforeEach
     void setUpMember(){
+        // 멤버 생성
         Member member = Member.builder()
-                .name("지우")
-                .nickname("포켓몬 마스터")
+                .nickname("@user-a1da23")
                 .email("test@test.com")
                 .createTime(LocalDateTime.now())
                 .reviews(new ArrayList<>())
@@ -73,17 +61,14 @@ public class ReviewRepositoryTest {
                 .build();
         memberRepository.save(member);
 
+        // 평점 생성
         Rating rating=Rating.set();
-        rating.setFour(5);
-        rating.setFive(5);
         ratingRepository.save(rating);
-
+        // 평가 생성
         Assessment assessment = Assessment.set();
-        assessment.setGoodHygiene(1);
-        assessment.setKindness(1);
-        assessment.setBadTaste(1);
         assessmentRepository.save(assessment);
 
+        //가게 생성
         Shop createShop = Shop.builder()
                 .name("김해 국밥")
                 .x(12.123124)
@@ -96,139 +81,111 @@ public class ReviewRepositoryTest {
                 .build();
         shopRepository.save(createShop);
 
-        Review createReview = Review.builder()
+        // 리뷰 생성
+        Review createReview1 = Review.builder()
                 .member(member)
                 .comment("이집 음식이 굳 !")
                 .createTime(LocalDateTime.now().withNano(0))
                 .images(new ArrayList<>())
                 .shop(createShop)
                 .rating(3.5)
-                .taste("badTaste")
+                .taste("goodTaste")
                 .kindness("kindness")
-                .hygiene("hygiene")
+                .hygiene("goodHygiene")
                 .build();
 
-        member.getReviews().add(createReview);
-    }
-    @Test
-    @DisplayName("Find Review By Member Test")
-    @Transactional
-    void 멤버_리뷰_조회_테스트(){
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
-        findMember.orElseThrow(RuntimeException::new);
+        Review createReview2 = Review.builder()
+                .member(member)
+                .comment("맛이 좋습니다. !!")
+                .createTime(LocalDateTime.now().withNano(0).plusHours(1))
+                .images(new ArrayList<>())
+                .shop(createShop)
+                .rating(4)
+                .taste("goodTaste")
+                .kindness("kindness")
+                .hygiene("goodHygiene")
+                .build();
 
-        Optional<Shop> findShop = shopRepository.findByName("김해 국밥");
-        findShop.orElseThrow(RuntimeException::new);
-
-        Optional<Review> findReview = reviewRepository.findByShopAndMember(findShop.get(), findMember.get());
-        findReview.orElseThrow(RuntimeException::new);
-
-        logger.info(findReview.get().getComment());
+        reviewRepository.save(createReview1);
+        reviewRepository.save(createReview2);
+        member.getReviews().add(createReview1);
+        member.getReviews().add(createReview2);
     }
 
     @Test
     @DisplayName("Review Create Test")
-    @Transactional
-    void 리뷰_작성_테스트(){ //todo 다시 로직 짜기
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
-        findMember.orElseThrow(RuntimeException::new);
-
-        String findShopName = "김해 국밥";
-        Optional<Shop> findShop = shopRepository.findByName(findShopName);
-        findShop.orElseThrow(RuntimeException::new);
+    void 리뷰_작성_테스트(){
+        Optional<Member> member = memberRepository.findByEmail("test@test.com");
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
 
         Review createReview = Review.builder()
-                .member(findMember.get())
+                .id(3L)
+                .member(member.get())
+                .shop(shop.get())
                 .comment("이집 음식이 최고에요 !")
-                .images(new ArrayList<>())
-                .shop(findShop.get())
                 .rating(4.5)
                 .hygiene("badHygiene")
                 .taste("goodTaste")
                 .kindness("kindness")
+                .images(new ArrayList<>())
                 .createTime(LocalDateTime.now())
                 .build();
 
-        setRatingToShop(findShop.get(),createReview.getRating());
-        setAssessment(findShop.get(),createReview.getTaste(),createReview.getHygiene(),createReview.getKindness());
-        findShop.get().getRating().setCount(findShop.get().getRating().getCount()+1);
-        findShop.get().setReviewCount(findShop.get().getReviewCount()+1);
+        reviewRepository.save(createReview);
 
-        shopRepository.save(findShop.get());
-
-        findMember.get().getReviews().add(createReview);
-
-        memberRepository.save(findMember.get());
-        Review actualReview = findMember.get().getReviews().get(1);
-        assertThat(actualReview.getComment()).isEqualTo("이집 음식이 최고에요 !");
+        Optional<Review> saveReview  = reviewRepository.findById(3L);
+        assertTrue(saveReview.isPresent(),"리뷰가 저장되었습니다.");
     }
-
     @Test
-    @DisplayName("Review Update Test")
-    @Transactional
-    void 리뷰_업데이트_테스트(){
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
-        findMember.orElseThrow(RuntimeException::new);
-
-        String findShopName = "김해 국밥";
-        Optional<Shop> findShop = shopRepository.findByName(findShopName);
-        findShop.orElseThrow(RuntimeException::new);
-
-        Optional<Review> findReview = reviewRepository.findByShopAndMember(findShop.get(),findMember.get());
-        findReview.orElseThrow(RuntimeException::new);
-
-        String updateComment = "사실 음식이 별로였어요";
-        findReview.get().setComment(updateComment);
-        findMember.get().getReviews().add(findReview.get());
-
-        Review actualReview = findMember.get().getReviews().get(0);
-        assertThat(actualReview.getComment()).isEqualTo(updateComment);
+    @DisplayName("Review Sort By CreateTime DESC")
+    void 리뷰_최신순_조회_테스트(){
+        Optional<Member> member = memberRepository.findByEmail("test@test.com");
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
+        List<Review> findReview = reviewRepository.findByReviewAndCreateTimeAsc(shop.get().getId());
+        for(Review review : findReview){
+            logger.info("review -> "+review.getComment());
+        }
     }
-
-
-
     @Test
-    @DisplayName("Review Hard Delete Test")
+    @DisplayName("Review Sort By CreateTime ASC")
+    void 리뷰_오래된순_조회_테스트(){
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
+        List<Review> findReview = reviewRepository.findByReviewAndCreateTimeAsc(shop.get().getId());
+        for(Review review : findReview){
+            logger.info("review -> "+review.getComment());
+        }
+    }
+    @Test
+    @DisplayName("Review Sort By Rating DESC")
+    void 리뷰_높은평점순_조회_테스트(){
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
+        List<Review> findReview = reviewRepository.findByReviewAndRatingDesc(shop.get().getId());
+        for(Review review : findReview){
+            logger.info("review -> "+review.getComment());
+        }
+    }
+    @Test
+    @DisplayName("Review Sort By Rating ASC")
+    void 리뷰_낮은평점순_조회_테스트(){
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
+        List<Review> findReview = reviewRepository.findByReviewAndRatingAsc(shop.get().getId());
+        for(Review review : findReview){
+            logger.info("review -> "+review.getComment());
+        }
+    }
+    @Test
+    @DisplayName("Review Delete Test")
     @Transactional
-    void 리뷰_Hard_Delete_테스트(){
-        String findName = "지우";
-        Optional<Member> findMember = memberRepository.findByName(findName);
-        findMember.orElseThrow(RuntimeException::new);
+    void 리뷰_삭제_테스트(){
+        Optional<Member> member = memberRepository.findByEmail("test@test.com");
+        Optional<Shop> shop = shopRepository.findByName("김해 국밥");
+        List<Review> findReview = reviewRepository.findByShopAndMember(shop.get(),member.get());
 
-        String findShopName = "김해 국밥";
-        Optional<Shop> findShop = shopRepository.findByName(findShopName);
-        findShop.orElseThrow(RuntimeException::new);
+        Long id = findReview.get(0).getId();
+        reviewRepository.delete(findReview.get(0));
 
-        Optional<Review> findReview = reviewRepository.findByShopAndMember(findShop.get(),findMember.get());
-        findReview.orElseThrow(RuntimeException::new);
+        Optional<Review> deletedReview = reviewRepository.findById(id);
+        assertFalse(deletedReview.isPresent(), "리뷰가 삭제되었습니다.");
 
-        findMember.get().getReviews().remove(findReview.get());
-        reviewRepository.delete(findReview.get());
-        //memberRepository.save(findMember.get());
     }
-    private void setRatingToShop(Shop shop, Double rating){
-        if(rating==5.0) shop.getRating().setFive(shop.getRating().getFive()+1);
-        else if(rating==4.5) shop.getRating().setFourHalf(shop.getRating().getFourHalf()+1);
-        else if(rating==4.0) shop.getRating().setFour(shop.getRating().getFour()+1);
-        else if(rating==3.5) shop.getRating().setThreeHalf(shop.getRating().getThreeHalf()+1);
-        else if(rating==3.0) shop.getRating().setThree(shop.getRating().getThree()+1);
-        else if(rating==2.5) shop.getRating().setTwoHalf(shop.getRating().getTwoHalf()+1);
-        else if(rating==2.0) shop.getRating().setTwo(shop.getRating().getTwo()+1);
-        else if(rating==1.5) shop.getRating().setOneHalf(shop.getRating().getOneHalf()+1);
-        else if(rating==1.0) shop.getRating().setOne(shop.getRating().getOne()+1);
-        else if(rating==0.5) shop.getRating().setHalf(shop.getRating().getHalf()+1);
-        else shop.getRating().setZero(shop.getRating().getZero()+1);
-    }
-    private void setAssessment(Shop shop,String taste,String hygiene,String kindness){
-        if(taste.equals("goodTaste")) shop.getAssessment().setGoodTaste(shop.getAssessment().getGoodTaste()+1);
-        else if(taste.equals("badTaste")) shop.getAssessment().setBadTaste(shop.getAssessment().getBadTaste()+1);
-        if(hygiene.equals("goodHygiene")) shop.getAssessment().setGoodHygiene(shop.getAssessment().getGoodHygiene()+1);
-        else if(hygiene.equals("badHygiene")) shop.getAssessment().setBadHygiene(shop.getAssessment().getBadHygiene()+1);
-        if(kindness.equals("unKindness")) shop.getAssessment().setUnKindness(shop.getAssessment().getUnKindness()+1);
-        else if(kindness.equals("kindness")) shop.getAssessment().setKindness(shop.getAssessment().getKindness()+1);
-    }
-
 }

@@ -60,7 +60,7 @@ public class ReviewService {
         Optional<Member> findMember = memberRepository.findByEmail(email);
         findMember.orElseThrow(RuntimeException::new);
 
-        List<Review> findReview = reviewRepository.findByReviewWithMember(findMember.get());
+        List<Review> findReview = reviewRepository.findByReviewWithMemberWithCreateTimeAsc(findMember.get());
 
         List<ReviewListDto> list = new ArrayList<>();
 

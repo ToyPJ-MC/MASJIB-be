@@ -51,7 +51,7 @@ public class MemberControllerTest{
     void 멤버_컨트롤러_멤버_조회_테스트() throws Exception {
 
         given(memberService.findMemberById(any()))
-                .willReturn(new ResponseMemberbyFindwithReviewDto(15L, "지우","test@test.com","@user-a1da23",new JSONArray()));
+                .willReturn(new ResponseMemberbyFindwithReviewDto(15L,"test@test.com","@user-a1da23",new JSONArray()));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{id}",15).with(oauth2Login())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -67,7 +67,6 @@ public class MemberControllerTest{
                         ),
                         responseFields(
                                 fieldWithPath("id").type(JsonFieldType.NUMBER).description("멤버의 고유 번호"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("멤버의 이름"),
                                 fieldWithPath("nickName").type(JsonFieldType.STRING).description("멤버의 고유 닉네임"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("멤버의 고유 이메일"),
                                 fieldWithPath("reviews").type(JsonFieldType.ARRAY).description("등록된 리뷰정보와 images")

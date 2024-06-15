@@ -16,18 +16,13 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
     @Query("select r from Review r where r.member = :member and r.id = :id")
     Optional<Review> findByIdAndMember (@Param("id") long id, @Param("member") Member member);
 
-    Optional<Review> findByShopAndMember (Shop shop, Member member);
+    List<Review> findByShopAndMember (Shop shop, Member member);
     @Query("select r from Review r where r.member = :member order by r.createTime asc")
-    List<Review> findByReviewWithMember (@Param("member") Member member);
-
-    @Query("select r from Review r where size(r.images)>0 and r.shop.id = :id order by r.createTime desc, r.id asc limit 1")
-    Review findReviewByImageNotNUll(@Param("id") long id);
+    List<Review> findByReviewWithMemberWithCreateTimeAsc (@Param("member") Member member);
 
     @Query("select r from Review r where r.shop.id = :shopid order by r.createTime desc")
     Review findByRecentReview(@Param("shopid")long id) ;
 
-    @Query("select r from Review r order by :sort desc, r.id asc limit 1")
-    Review findByReview (@Param("sort") String sort);
 
     @Query("select r from Review r where r.shop.id = :shop_id and r.comment is not null order by r.createTime desc") //최신순
     List<Review> findByReviewAndCreateTimeDesc(@Param("shop_id")long shop_id);
