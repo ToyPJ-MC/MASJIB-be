@@ -46,8 +46,6 @@ public class ShopRepositoryTest {
     private AssessmentRepository assessmentRepository;
     @Autowired
     private RatingRepository ratingRepository;
-    @Autowired
-    private ImageRepository imageRepository;
     @BeforeEach
     void setUp(){
 
@@ -64,13 +62,13 @@ public class ShopRepositoryTest {
                 .name("김해 돼지국밥 본점")
                 .x(127.03110424141911)
                 .y(37.49660481702947)
-                .reviewCount(0)
+                .reviewCount(5)
                 .status("영업")
                 .address("경남 김해시 인제로 327")
                 .kind("한식")
                 .rating(rating)
                 .assessment(assessment)
-                .followCount(0)
+                .followCount(1)
                 .build();
 
         shopRepository.save(createShop1);
@@ -88,12 +86,12 @@ public class ShopRepositoryTest {
                 .name("김해 공룡피자 본점")
                 .x(127.03110424141911)
                 .y(37.49660481702947)
-                .reviewCount(0)
+                .reviewCount(1)
                 .status("영업")
                 .address("경남 김해시 인제로 14-3")
                 .kind("양식")
                 .rating(rating1)
-                .followCount(0)
+                .followCount(3)
                 .assessment(assessment1)
                 .build();
 
@@ -128,42 +126,38 @@ public class ShopRepositoryTest {
     @Test
     @DisplayName("Search For Shop Within a 1km Radius Test")
     void 반경_1km내_음식점_조회_테스트(){
-        List<Shop> findShopByAddress = shopRepository.findByAddressAndXAndY(127.030619,37.496568);
-        for(Shop shop : findShopByAddress){
-            System.out.printf("shop -> %s \n",shop.getName());
-        }
+        List<Shop> shops = shopRepository.findByAddressAndXAndY(127.030619,37.496568);
+        for(Shop shop : shops) logger.info(shop.getAddress());
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Ratings Avg Test")
     void 반경_1km내_음식점_맛_별점_조회_테스트(){
-        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusWithRating(127.030619,37.496568);// 내림차순
-        for(Shop shop : findShopByRating){
-            System.out.printf("shop -> %s \n",shop.getName());
-        }
+        List<Shop> shops = shopRepository.sortByShopWithinRadiusWithRating(127.030619,37.496568);// 내림차순
+        for(Shop shop : shops) logger.info(shop.getAddress());
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of followCount Test")
     void 반경_1km내_음식점_찜순_조회_테스트(){
-        List<Shop> findShopByFollwCount = shopRepository.findByShopWithinRadiusAndFollowCount(127.030619,37.496568);// 내림차순
+        List<Shop> shops = shopRepository.findByShopWithinRadiusAndFollowCount(127.030619,37.49660481702947);// 내림차순
+        for(Shop shop : shops) logger.info(String.valueOf(shop.getFollowCount()));
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of reviewCount Test")
     void 반경_1km내_음식점_리뷰순_조회_테스트(){
-        List<Shop> findShopByReviewCount = shopRepository.findByShopWithinRadiusAndReviewCount(127.030619,37.496568);// 내림차순
+        List<Shop> shops = shopRepository.findByShopWithinRadiusAndReviewCount(127.030619,37.49660481702947);// 내림차순
+        for(Shop shop : shops) logger.info(String.valueOf(shop.getReviewCount()));
     }
     @Test
     @DisplayName("Shop Within a 1km Radius In Order Of Taste Ratings Test")
     void 반경_1km내_음식점_맛_평가_조회_테스트(){
-        List<Shop> findShopByRating = shopRepository.sortByShopWithinRadiusAndTasteAssess(12.114001,89.11414); //내림차순
+        List<Shop> shops = shopRepository.sortByShopWithinRadiusAndTasteAssess(127.030619,37.49660481702947); //내림차순
+        for(Shop shop : shops) logger.info(shop.getAddress());
     }
     @Test
-    @DisplayName("View Photos Included In a Shop Test")
-    void 음식점_id_사진_조회_테스트(){
-        Optional<Shop> findShop = shopRepository.findByName("김해 돼지국밥 본점");
-        findShop.orElseThrow(RuntimeException::new);
-
-        List<Image> findImages = imageRepository.findByShopId(findShop.get().getId());
-
+    @DisplayName("find By Shop With Follow Count Test")
+    void 반경_1KM_음식점_전체_조회_테스트(){
+        List<Shop> shops = shopRepository.findByShopWhtinRadiusAll(127.03110424141911,37.49660481702947);
+        for(Shop shop : shops) logger.info(shop.getAddress());
     }
     @Test
     @DisplayName("Change Address to X,Y Using GeoCode Test")

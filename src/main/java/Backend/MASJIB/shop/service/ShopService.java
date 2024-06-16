@@ -181,7 +181,7 @@ public class ShopService {
         List<Shop> findShop = shopRepository.findByShopWhtinRadiusAll(dto.getX(),dto.getY());
         List<ResponseShopByAllDto> dtos = new ArrayList<>();
         for(Shop shop : findShop){
-             Image image = imageRepository.findByImageWithShopId(shop.getId());
+             Image image = imageRepository.findByRecentImage(shop.getId());
              if(image==null) dtos.add(ResponseShopByAllDto.set(shop,"등록된 사진이 없습니다."));
              else dtos.add(ResponseShopByAllDto.set(shop,image.getPath()));
              dtos.get(0);
