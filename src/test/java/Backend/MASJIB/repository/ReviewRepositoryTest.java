@@ -129,7 +129,6 @@ public class ReviewRepositoryTest {
                 .images(new ArrayList<>())
                 .createTime(LocalDateTime.now())
                 .build();
-
         reviewRepository.save(createReview);
 
         Optional<Review> saveReview  = reviewRepository.findById(3L);
