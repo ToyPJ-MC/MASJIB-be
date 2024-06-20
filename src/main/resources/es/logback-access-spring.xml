@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <!-- Elasticsearch 서버 URL -->
+        <Property name="elasticsearch_url">http://localhost:9200</Property>
+    </Properties>
+    <Appenders>
+        <!-- Elasticsearch Appender -->
+        <Elasticsearch name="elasticsearchAppender"
+                       index="logs-%d{yyyy-MM-dd}"
+                       indexDateFormat="yyyy-MM-dd"
+                       indexTimeout="5s"
+                       indexRolling="true"
+                       indexRollingPeriod="1d"
+                       createIndex="true"
+                       ignoreExceptions="false">
+            <!-- Elasticsearch 서버의 URL 설정 -->
+            <JacksonJsonLayout includeStacktrace="true" compact="true"/>
+            <Property name="url">${elasticsearch_url}</Property>
+        </Elasticsearch>
+    </Appenders>
+    <Loggers>
+        <!-- Root Logger -->
+        <Root level="info">
+            <AppenderRef ref="elasticsearchAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

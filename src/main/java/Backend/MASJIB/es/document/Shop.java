@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "idx_es_shop",createIndex = true)
+@Document(indexName = "idx_es_shop")
 @Builder
 @Setting(settingPath = "es-config/setting.json")
 //@Mapping(mappingPath = "es-config/mapping.json")

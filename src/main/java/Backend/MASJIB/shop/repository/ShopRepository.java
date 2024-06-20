@@ -51,4 +51,7 @@ public interface ShopRepository extends JpaRepository<Shop,Long> {
             "SIN(RADIANS(:myY)) * SIN(RADIANS(s.y))) < 1 AND s.status = '영업' " +
             "ORDER BY s.name")
     List<Shop> findByShopWhtinRadiusAll(@Param("myX") double myX, @Param("myY") double myY);//반경 1km 내 전체 조회
+
+    @Query("SELECT s from Shop s where s.name like'%역전%' or s.address like '%역전%' or s.kind like '%역전%'")
+    List<Shop> testByes();
 }

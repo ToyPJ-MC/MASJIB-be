@@ -31,6 +31,9 @@ public class ShopService {
         this.reviewRepository = reviewRepository;
         this.imageRepository = imageRepository;
     }
+    public List<Shop> testshop(){
+        return shopRepository.testByes();
+    }
     public List<String> getShopImages(long shopId, int page){
         Optional<Shop> findShop = shopRepository.findById(shopId);
         findShop.orElseThrow(RuntimeException::new);
