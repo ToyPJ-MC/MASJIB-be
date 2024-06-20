@@ -48,6 +48,8 @@ dependencies {
 
 	implementation("net.coobird:thumbnailator:0.4.20") //images
 	implementation("org.springframework.data:spring-data-elasticsearch:5.1.12")
+	implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.21")
+
 
 	implementation("org.locationtech.proj4j:proj4j:1.2.2")
 	implementation("com.googlecode.json-simple:json-simple:1.1.1")

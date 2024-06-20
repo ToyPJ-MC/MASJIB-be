@@ -10,6 +10,8 @@ spring:
       url: ENC(1rBlgKHg9bb8VBF5n9TWKJIerQLkJ77T)
       username: ENC(o/CleJkct9n0sOnYQUJuUw==)
       password: ENC(La+OE4w/F/pf3Q2cm6LiZ3edL3s/gwcm)
+      host: ENC(n7R5cuASPNd95W0K5SK9fsBVzLVIdZvR)
+      port: ENC(Jdc5k0zauhyCcF7ZG5iaJg==)
 
 ---
 spring:
@@ -24,4 +26,6 @@ spring:
       url: ENC(E5lgSEAlUg0eeVBPZdSkFZsu4IDqaNhGsVOi7pGjoaU=)
       username: ENC(o/CleJkct9n0sOnYQUJuUw==)
       password: ENC(La+OE4w/F/pf3Q2cm6LiZ3edL3s/gwcm)
+      host: ENC(2ni4082IOYFELuz6G8vlKIlIvdwc/qDv)
+      port: ENC(Jdc5k0zauhyCcF7ZG5iaJg==)
 
