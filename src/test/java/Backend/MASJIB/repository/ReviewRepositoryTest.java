@@ -119,7 +119,6 @@ public class ReviewRepositoryTest {
         Optional<Shop> shop = shopRepository.findByName("김해 국밥");
 
         Review createReview = Review.builder()
-                .id(3L)
                 .member(member.get())
                 .shop(shop.get())
                 .comment("이집 음식이 최고에요 !")
