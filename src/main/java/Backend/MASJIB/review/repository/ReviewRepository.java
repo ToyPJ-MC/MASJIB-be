@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review,Long> {
+
     @Query("select r from Review r where r.member = :member and r.id = :id")
     Optional<Review> findByIdAndMember (@Param("id") long id, @Param("member") Member member);
 

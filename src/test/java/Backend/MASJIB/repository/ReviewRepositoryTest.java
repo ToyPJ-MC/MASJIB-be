@@ -131,8 +131,8 @@ public class ReviewRepositoryTest {
                 .build();
         reviewRepository.save(createReview);
 
-        Optional<Review> saveReview  = reviewRepository.findById(3L);
-        assertTrue(saveReview.isPresent(),"리뷰가 저장되었습니다.");
+        List<Review> saveReview  = reviewRepository.findByShopAndMember(shop.get(),member.get());
+        assertFalse(saveReview.isEmpty(), "Reviews should be saved");
     }
     @Test
     @DisplayName("Review Sort By CreateTime DESC")
