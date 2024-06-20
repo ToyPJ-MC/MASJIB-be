@@ -1,6 +1,7 @@
 package Backend.MASJIB.controller;
 
 import Backend.MASJIB.shop.dto.*;
+import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.service.ShopService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,5 +78,21 @@ public class ShopController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @GetMapping("/shop/test")
+    @Operation(summary = "속도 테스트")
+    public ResponseEntity getShopByTest(){
+        try{
+            List<Shop> dtos = shopService.testshop();
+            return ResponseEntity.ok().body(dtos);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
+
+/*
+long beforeTime = System.nanoTime(); //코드 실행 전에 시간 받아오기
+long afterTime = System.nanoTime(); // 코드 실행 후에 시간 받아오기
+long secDiffTime = (afterTime - beforeTime)/1000000; //두 시간에 차 계산
+System.out.println("시간차이(m) : "+secDiffTime);
+*/
