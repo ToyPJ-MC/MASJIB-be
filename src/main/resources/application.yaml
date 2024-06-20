@@ -30,7 +30,8 @@ logging:
   level:
     org.elasticsearch.client: debug
     tracer: trace
-
+  jackson:
+    time-zone: Asia/Seaul
 
 uploadPath: file:./images/
 
