@@ -28,6 +28,10 @@ public class Shop {
 
     @Field(type = FieldType.Text)
     private String kind; //업종 명 ex 한식, 중식 ...
+    @Field(type = FieldType.Double)
+    private Double x;
+    @Field(type = FieldType.Double)
+    private Double y;
 
     public static Shop from(Backend.MASJIB.shop.entity.Shop shop){
         return Shop.builder()

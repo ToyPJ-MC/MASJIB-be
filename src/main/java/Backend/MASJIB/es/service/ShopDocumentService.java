@@ -7,6 +7,7 @@ import Backend.MASJIB.es.repository.ShopDocumentRepository;
 import Backend.MASJIB.es.repository.ShopLogRepository;
 import Backend.MASJIB.shop.repository.ShopRepository;
 
+import co.elastic.clients.json.JsonData;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
@@ -22,12 +23,14 @@ import org.elasticsearch.search.aggregations.bucket.terms.ParsedStringTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -84,23 +87,20 @@ public class ShopDocumentService {
         LocalDateTime startOfNextHour = startOfCurrentHour.plusHours(1);
         //ex) 현재 17:30분이라면 17:00 정각부터 ~ 18:00 사이를 구하기 때문에
 
-        // 결과 출력
+        // 결과 출_
         // DateTimeFormatter를 사용하여 초까지 출력
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
         String formatGte = startOfCurrentHour.format(formatter);
         String formatLte = startOfNextHour.format(formatter);
 
-        LocalDateTime gte = LocalDateTime.parse(formatGte);
-        LocalDateTime lte = LocalDateTime.parse(formatLte);
-
         TermsAggregationBuilder agg = new TermsAggregationBuilder("keywords_per_hour")
                 .field("keyword.keyword")
                 .size(10);
         BoolQueryBuilder queryBuilders = QueryBuilders.boolQuery()
                 .must(rangeQuery("createTime")
-                        .gte(gte)
-                        .lte(lte));
+                        .gte(formatGte)
+                        .lte(formatLte));
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
                 .query(queryBuilders)
                 .aggregation(agg);
@@ -127,6 +127,8 @@ public class ShopDocumentService {
                     .id(shop.getId())
                     .name(shop.getName())
                     .address(shop.getAddress())
+                    .x(shop.getX())
+                    .y(shop.getY())
                     .kind(shop.getKind())
                     .build();
             shopDocumentRepository.save(addShop);
