@@ -23,16 +23,13 @@ public class ShopLog {
     private String id;
     @Field(type = FieldType.Text)
     private String keyword;
-    @Field(type = FieldType.Long)
-    private Long count;
-    @Field(type = FieldType.Date, format = {DateFormat.date_hour_minute, DateFormat.date_hour_minute})
+    @Field(type = FieldType.Date, format = {DateFormat.date_hour_minute_second_millis, DateFormat.date_hour_minute_second_millis,DateFormat.epoch_millis})
     private LocalDateTime createTime;
 
     public static ShopLog from(String keyword){
         return ShopLog.builder()
                 .id(UUID.randomUUID().toString())
                 .keyword(keyword)
-                .count(0L)
                 .createTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")).withNano(0))
                 .build();
     }
