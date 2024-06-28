@@ -24,6 +24,9 @@ import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilde
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -120,19 +123,30 @@ public class ShopDocumentService {
         return shopLogs;
     }
     public void convertToDocument(){  //shop entity -> document 객체로 변환
-        List<Backend.MASJIB.shop.entity.Shop> shops = shopRepository.findAll();
+        int pageSize = 1000; // 한 번에 처리할 데이터 양
+        int pageNumber = 0;  // 첫 번째 페이지 번호
+        Page<Backend.MASJIB.shop.entity.Shop> shopPage;
 
-        for(Backend.MASJIB.shop.entity.Shop shop : shops){
-            Shop addShop = Shop.builder()
-                    .id(shop.getId())
-                    .name(shop.getName())
-                    .address(shop.getAddress())
-                    .x(shop.getX())
-                    .y(shop.getY())
-                    .kind(shop.getKind())
-                    .build();
-            shopDocumentRepository.save(addShop);
-        }
+        do {
+            // 현재 페이지의 데이터를 가져옵니다.
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            shopPage = shopRepository.findAll(pageable);
+
+            for (Backend.MASJIB.shop.entity.Shop shop : shopPage) {
+                Shop addShop = Shop.builder()
+                        .id(shop.getId())
+                        .name(shop.getName())
+                        .address(shop.getAddress())
+                        .x(shop.getX())
+                        .y(shop.getY())
+                        .kind(shop.getKind())
+                        .build();
+                shopDocumentRepository.save(addShop);
+            }
+
+            // 다음 페이지로 이동하기 위해 페이지 번호를 증가시킵니다.
+            pageNumber++;
+        } while (shopPage.hasNext());
     }
 
     public List<Shop> SearchShop(String keyword){ //keyword로 검색을 통해 shop을 return
