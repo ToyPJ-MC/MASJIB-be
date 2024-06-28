@@ -46,6 +46,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-client:3.2.0")
 	implementation("org.springframework.boot:spring-boot-starter-security:3.2.4")
 
+	implementation("org.springframework.cloud:spring-cloud-gcp-starter:1.2.8.RELEASE")
+	implementation("org.springframework.cloud:spring-cloud-gcp-storage:1.2.8.RELEASE")
+
+
 	implementation("net.coobird:thumbnailator:0.4.20") //images
 	implementation("org.springframework.data:spring-data-elasticsearch:5.1.12")
 	implementation("org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.21")

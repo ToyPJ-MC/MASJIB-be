@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 /images/**
 /logs/**
+/src/main/resources/gcp/**
 .DS_Store
 ### IntelliJ IDEA ###
 .idea

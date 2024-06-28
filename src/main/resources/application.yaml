@@ -10,6 +10,7 @@ spring:
       - application-apidocs.yaml
       - application-jwt.yaml
       - application-es.yaml
+      - application-gcp.yaml
 
   main:
     allow-bean-definition-overriding: true

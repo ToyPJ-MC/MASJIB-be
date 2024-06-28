@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: ENC(vkAnWgpPKzLeTYaNHieIWeoRUQ0BT6gTRwwdW5SQirM5JQCP2UoNRA==)
+        project-id: ENC(Cu5BRJrkcJ7iyvc68eGnkw==)
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - local
+  cloud:
+    gcp:
+      storage:
+        credentials:
+        bucket: ENC(E2WUSpUoIXVhNDhM6Q6EmZm7fSgbIRFoclJm22nnVYQ=)
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+  cloud:
+    gcp:
+      storage:
+        credentials:
+        bucket: ENC(G5isNcTf1ccjOor0sDf2s1SX/tml6ahV)

@@ -14,21 +14,21 @@ import Backend.MASJIB.review.entity.Review;
 import Backend.MASJIB.review.repository.ReviewRepository;
 import Backend.MASJIB.shop.entity.Shop;
 import Backend.MASJIB.shop.repository.ShopRepository;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,14 +46,21 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
     private final ImageRepository imageRepository;
+
+    @Value("${spring.cloud.gcp.storage.bucket}")
+    private String bucketName;
+
+    private final Storage storage;
+
     @Autowired
     public ReviewService(ReviewRepository reviewRepository, ImageRepository imageRepository,
                          MemberRepository memberRepository,
-                         ShopRepository shopRepository) {
+                         ShopRepository shopRepository, Storage storage) {
         this.reviewRepository = reviewRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
         this.shopRepository = shopRepository;
+        this.storage = storage;
     }
     @Transactional
     public List<ReviewListDto> getReviews(String email){
@@ -151,10 +158,20 @@ public class ReviewService {
                             newHeight = 1000;
                             newWidth = (width * 1000) / height;
                         }
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         Thumbnails.of(originalFile)
                                 .size(newWidth, newHeight)
                                 .outputFormat(getFileExtension(originalPath))
-                                .toFile(originalFile);
+                                .toOutputStream(baos);
+
+                        byte[] bytes = baos.toByteArray();
+
+                        // BlobInfo 객체 생성 및 업로드
+                        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, originalPath)
+                                .setContentType(file.getContentType())
+                                .build();
+
+                        storage.create(blobInfo, bytes);
                     }
 
 
