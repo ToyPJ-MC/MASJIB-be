@@ -27,6 +27,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.suggest.Completion;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -133,14 +134,7 @@ public class ShopDocumentService {
             shopPage = shopRepository.findAll(pageable);
 
             for (Backend.MASJIB.shop.entity.Shop shop : shopPage) {
-                Shop addShop = Shop.builder()
-                        .id(shop.getId())
-                        .name(shop.getName())
-                        .address(shop.getAddress())
-                        .x(shop.getX())
-                        .y(shop.getY())
-                        .kind(shop.getKind())
-                        .build();
+                Shop addShop = Shop.from(shop);
                 shopDocumentRepository.save(addShop);
             }
 

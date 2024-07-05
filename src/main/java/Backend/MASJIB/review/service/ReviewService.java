@@ -147,34 +147,28 @@ public class ReviewService {
                     BufferedImage bufferedImage = ImageIO.read(originalFile);
                     int width = bufferedImage.getWidth();
                     int height = bufferedImage.getHeight();
-
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     if (width > 1000 || height > 1000) {
-                        int newWidth;
-                        int newHeight;
                         if (width > height) {
-                            newWidth = 1000;
-                            newHeight = (height * 1000) / width;
+                            width = 1000;
+                            height = (height * 1000) / width;
                         } else {
-                            newHeight = 1000;
-                            newWidth = (width * 1000) / height;
+                            height = 1000;
+                            width = (width * 1000) / height;
                         }
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        Thumbnails.of(originalFile)
-                                .size(newWidth, newHeight)
-                                .outputFormat(getFileExtension(originalPath))
-                                .toOutputStream(baos);
-
-                        byte[] bytes = baos.toByteArray();
-
-                        // BlobInfo 객체 생성 및 업로드
-                        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, originalPath)
-                                .setContentType(file.getContentType())
-                                .build();
-
-                        storage.create(blobInfo, bytes);
                     }
+                    Thumbnails.of(originalFile)
+                            .size(width, height)
+                            .outputFormat(getFileExtension(originalPath))
+                            .toOutputStream(baos);
+                    byte[] bytes = baos.toByteArray();
 
+                    // BlobInfo 객체 생성 및 업로드
+                    BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, originalPath)
+                            .setContentType(file.getContentType())
+                            .build();
 
+                    storage.create(blobInfo, bytes);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

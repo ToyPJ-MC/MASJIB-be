@@ -3,6 +3,7 @@ package Backend.MASJIB.es.document;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
+import org.springframework.data.elasticsearch.core.suggest.Completion;
 
 import java.time.LocalDateTime;
 
@@ -32,13 +33,17 @@ public class Shop {
     private Double x;
     @Field(type = FieldType.Double)
     private Double y;
-
+    @Field(type = FieldType.Text)
+    private Completion name_suggest;
     public static Shop from(Backend.MASJIB.shop.entity.Shop shop){
         return Shop.builder()
                 .id(shop.getId())
                 .kind(shop.getKind())
                 .address(shop.getAddress())
                 .name(shop.getName())
+                .x(shop.getX())
+                .y(shop.getY())
+                .name_suggest(new Completion(new String[]{shop.getName()}))
                 .build();
     }
 }
